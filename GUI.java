@@ -32,6 +32,29 @@ public class GUI {
 		}
 	}
 
+	public void drawMenu(Color backgroundColor) {
+		StdDraw.setCanvasSize(resolutionX, resolutionY);
+		StdDraw.setXscale(0, resolutionX);
+		StdDraw.setYscale(0, resolutionY);
+		StdDraw.setPenColor(backgroundColor);
+		StdDraw.enableDoubleBuffering();
+		if(debugLog) {
+			System.out.println("Menu canvas size is set to " + resolutionX + " x " + resolutionY);
+			System.out.println("X scale is set from 0 to " + resolutionX);
+			System.out.println("Y scale is set from 0 to " + resolutionY);
+			System.out.println("Pen color is set to " + StdDraw.getPenColor());
+			System.out.println("Enable Double Buffering");
+		}
+		StdDraw.filledRectangle(resolutionX / 2.0, resolutionY / 2.0,
+		                 resolutionX / 2.0, resolutionY / 2.0);
+		if(debugLog) {
+			System.out.println("Background filled");
+		}
+		StdDraw.show();
+		if(debugLog) {
+			System.out.println("Menu canvas drawn!");
+		}
+	}
 	public void drawCanvas() {
 		StdDraw.setCanvasSize(resolutionX, resolutionY);
 		StdDraw.setXscale(0, resolutionX);
@@ -164,6 +187,58 @@ public class GUI {
 			StdDraw.show();
 		}
 	}
+	public void drawOptionsL(int positionX, int positionY, String text, int fontSize) {
+		StdDraw.enableDoubleBuffering();
+		StdDraw.setPenColor(255, 192, 225);
+		StdDraw.filledRectangle(positionX, positionY, 185, 20);
+		StdDraw.filledRectangle(positionX, positionY, 170, 35);
+		StdDraw.filledCircle(positionX - 170, positionY - 20, 15);
+		StdDraw.filledCircle(positionX + 170, positionY - 20, 15);
+		StdDraw.filledCircle(positionX - 170, positionY + 20, 15);
+		StdDraw.filledCircle(positionX + 170, positionY + 20, 15);
+		StdDraw.setPenColor(192, 255, 255);
+		StdDraw.filledRectangle(positionX, positionY, 180, 20);
+		StdDraw.filledRectangle(positionX, positionY, 170, 30);
+		StdDraw.filledCircle(positionX - 170, positionY - 20, 10);
+		StdDraw.filledCircle(positionX + 170, positionY - 20, 10);
+		StdDraw.filledCircle(positionX - 170, positionY + 20, 10);
+		StdDraw.filledCircle(positionX + 170, positionY + 20, 10);
+		StdDraw.setPenColor(0, 0, 0);
+		Font font = new Font("Microsoft JhengHei", Font.PLAIN ,fontSize);
+		StdDraw.setFont(font);
+		StdDraw.text(positionX, positionY, text);
+		StdDraw.show();
+	}
+	public void drawOptionsS(int positionX, int positionY, String text, int fontSize) {
+		StdDraw.enableDoubleBuffering();
+		StdDraw.setPenColor(255, 192, 225);
+		StdDraw.filledRectangle(positionX, positionY, 85, 20);
+		StdDraw.filledRectangle(positionX, positionY, 70, 35);
+		StdDraw.filledCircle(positionX - 70, positionY - 20, 15);
+		StdDraw.filledCircle(positionX + 70, positionY - 20, 15);
+		StdDraw.filledCircle(positionX - 70, positionY + 20, 15);
+		StdDraw.filledCircle(positionX + 70, positionY + 20, 15);
+		StdDraw.setPenColor(192, 255, 255);
+		StdDraw.filledRectangle(positionX, positionY, 80, 20);
+		StdDraw.filledRectangle(positionX, positionY, 70, 30);
+		StdDraw.filledCircle(positionX - 70, positionY - 20, 10);
+		StdDraw.filledCircle(positionX + 70, positionY - 20, 10);
+		StdDraw.filledCircle(positionX - 70, positionY + 20, 10);
+		StdDraw.filledCircle(positionX + 70, positionY + 20, 10);
+		StdDraw.setPenColor(0, 0, 0);
+		Font font = new Font("Microsoft JhengHei", Font.PLAIN ,fontSize);
+		StdDraw.setFont(font);
+		StdDraw.text(positionX, positionY, text);
+		StdDraw.show();
+	}
+	public void drawTitle(int positionX, int positionY, String text, int fontSize) {
+		StdDraw.enableDoubleBuffering();
+		StdDraw.setPenColor(0, 0, 0);
+		Font font = new Font("Microsoft JhengHei", Font.BOLD ,fontSize);
+		StdDraw.setFont(font);
+		StdDraw.text(positionX, positionY, text);
+		StdDraw.show();
+	}
 	//Do not use these methods! They can not use multi-thread.
 	/* public void drawTimer(int fontSize) {
 		double coordinate = resolutionY * 0.94;
@@ -197,21 +272,33 @@ public class GUI {
 	public static void main(String[] args) throws InterruptedException {
 		GUI gui = new GUI(1280, 720, 17,true);
 		GUI gui2 = new GUI(540, 720, 17,true);
-		gui2.drawCanvas();
-		StdDraw.pause(2000);
 		Color bg = new Color(255, 245, 255);
 		Color fg = new Color(255, 255, 245);
+		gui2.drawMenu(bg);
+		gui.drawTitle(270, 640, "Gomoku GUI Test", 40);
+		gui.drawOptionsS(168, 150, "Option 4", 28);
+		gui.drawOptionsS(372, 150, "Option 5", 28);
+		gui.drawOptionsL(270, 270, "Option 3", 28);
+		gui.drawOptionsL(270, 390, "Option 2", 28);
+		gui.drawOptionsL(270, 510, "Option 1", 28);
+		StdDraw.pause(3000);
 		gui.drawCanvas(1280, 720, bg, fg);
+		gui.drawTitle(1000, 640, "Gomoku GUI Test", 40);
+		gui.drawOptionsS(898, 150, "Option 4", 28);
+		gui.drawOptionsS(1102, 150, "Option 5", 28);
+		gui.drawOptionsL(1000, 270, "Option 3", 28);
+		gui.drawOptionsL(1000, 390, "Option 2", 28);
+		gui.drawOptionsL(1000, 510, "Option 1", 28);
 		gui.place(0, 0, false);
 		gui.place(1, 1, true);
-		gui.place(2,	2, false);
-		gui.place(3,	3, true);
-		gui.place(4,	4, false);
-		gui.place(5,	5, true);
-		gui.place(6,	6, false);
-		gui.place(7,	7, true);
-		gui.place(8,	8, false);
-		gui.place(9,	9, true);
+		gui.place(2, 2, false);
+		gui.place(3, 3, true);
+		gui.place(4, 4, false);
+		gui.place(5, 5, true);
+		gui.place(6, 6, false);
+		gui.place(7, 7, true);
+		gui.place(8, 8, false);
+		gui.place(9, 9, true);
 		gui.place(10, 10, false);
 		gui.place(11, 11, true);
 		gui.place(12, 12, false);
@@ -227,10 +314,11 @@ public class GUI {
 		thread1.start();
 		boolean b = true;
 		while(true) {
-			Thread.sleep(100);
+			gui.drawPlayer(b);
 			gui.drawPlayer(b);
 			timer2.started();
 			timer2.drawTimerLeft(24, gui.resolutionX, gui.resolutionY);
+			Thread.sleep(1000);
 			b = !b;
 		}
 		// System.out.println("Multiple thread timer");
