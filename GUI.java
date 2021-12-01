@@ -118,6 +118,7 @@ public class GUI {
 	public void place(int x, int y, boolean isBlack) {
 		double coordinate = (Math.min(resolutionX, resolutionY)) * 0.15;
 		double areaLength = (Math.min(resolutionX, resolutionY)) * 0.7;
+		StdDraw.enableDoubleBuffering();
 		if(isBlack) {
 			StdDraw.setPenColor(0, 0, 0);
 			StdDraw.filledCircle(coordinate + (x * areaLength / ((double)num - 1)),
@@ -135,6 +136,33 @@ public class GUI {
 				System.out.println("Filled white chess at (" + x + ", " + y + ")");
 		}
 		StdDraw.show();
+	}
+	public void drawPlayer(boolean isBlack) {
+		double coordinate = resolutionY * 0.08;
+		double areaLength = (Math.min(resolutionX, resolutionY)) * 0.7;
+		StdDraw.enableDoubleBuffering();
+		if(isBlack) {
+			StdDraw.setPenColor(0, 255, 255);
+			StdDraw.filledCircle(120, coordinate, (areaLength / ((double)num * 2)) * 1.1);
+			StdDraw.setPenColor(0, 0, 0);
+			StdDraw.filledCircle(120, coordinate, (areaLength / ((double)num * 2)) * 0.9);
+			StdDraw.setPenColor(255, 240, 255);
+			StdDraw.filledCircle(520, coordinate, (areaLength / ((double)num * 2)) * 1.1);
+			StdDraw.setPenColor(192, 192, 255);
+			StdDraw.filledCircle(520, coordinate, (areaLength / ((double)num * 2)) * 0.9);
+			StdDraw.show();
+		}
+		else {
+			StdDraw.setPenColor(0, 255, 255);
+			StdDraw.filledCircle(520, coordinate, (areaLength / ((double)num * 2)) * 1.1);
+			StdDraw.setPenColor(192, 192, 255);
+			StdDraw.filledCircle(520, coordinate, (areaLength / ((double)num * 2)) * 0.9);
+			StdDraw.setPenColor(255, 240, 255);
+			StdDraw.filledCircle(120, coordinate, (areaLength / ((double)num * 2)) * 1.1);
+			StdDraw.setPenColor(0, 0, 0);
+			StdDraw.filledCircle(120, coordinate, (areaLength / ((double)num * 2)) * 0.9);
+			StdDraw.show();
+		}
 	}
 	//Do not use these methods! They can not use multi-thread.
 	/* public void drawTimer(int fontSize) {
@@ -166,7 +194,7 @@ public class GUI {
 		}
 	}
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		GUI gui = new GUI(1280, 720, 17,true);
 		GUI gui2 = new GUI(540, 720, 17,true);
 		gui2.drawCanvas();
@@ -191,15 +219,21 @@ public class GUI {
 		gui.place(14, 14, false);
 		gui.place(15, 15, true);
 		gui.place(16, 16, false);
+		Thread.sleep(200);
 		Timer timer1 = new Timer(gui.resolutionX, gui.resolutionY, 24, 0);
 		Timer timer2 = new Timer(gui.resolutionX, gui.resolutionY, 24, 1);
 		Thread thread1 = new Thread(timer1);
-		Thread thread2 = new Thread(timer2);
 		timer1.started();
-		timer2.started();
 		thread1.start();
-		thread2.start();
-		System.out.println("Multiple thread timer");
+		boolean b = true;
+		while(true) {
+			Thread.sleep(100);
+			gui.drawPlayer(b);
+			timer2.started();
+			timer2.drawTimerLeft(24, gui.resolutionX, gui.resolutionY);
+			b = !b;
+		}
+		// System.out.println("Multiple thread timer");
 	}
 	// add other methods here
 }
