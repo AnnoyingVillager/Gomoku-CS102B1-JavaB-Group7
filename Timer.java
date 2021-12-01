@@ -40,7 +40,7 @@ public class Timer implements Runnable{
 	}
 	public void started() {
 		startTime = System.currentTimeMillis();
-		endTime = System.currentTimeMillis() + 30500;
+		endTime = System.currentTimeMillis() + 30600; // Need time-delay to avoid performance issues
 	}
 	@Override
 	public void run() {
@@ -61,15 +61,14 @@ public class Timer implements Runnable{
 		double coordinate = resolutionY * 0.94;
 		Font font = new Font("Microsoft JhengHei", Font.PLAIN ,fontSize);
 		StdDraw.setFont(font);
-		StdDraw.pause(50);
 		while(true) {
 			StdDraw.setPenColor(255, 255, 225);
 			StdDraw.filledRectangle(resolutionX / 2.0, coordinate,
-			 resolutionX / 4.0, resolutionY / 25.0);
+			 resolutionX / 5.0, resolutionY / 25.0);
 			StdDraw.setPenColor(0, 0, 0);
 			StdDraw.text(resolutionX / 2.0, coordinate, "Time spent: " + timeSpent());
 			StdDraw.show();
-			StdDraw.pause(1000);
+			StdDraw.pause(293); // use prime numbers to avoid performance issues
 		}
 	}
 
@@ -77,20 +76,19 @@ public class Timer implements Runnable{
 		double coordinate = resolutionY * 0.06;
 		Font font = new Font("Microsoft JhengHei", Font.PLAIN ,fontSize);
 		StdDraw.setFont(font);
-		int i = 30;
+		StdDraw.pause(300);
 		while(!timeLeft().equals("Time's up!")) {
 			StdDraw.setPenColor(255, 255, 225);
 			StdDraw.filledRectangle(resolutionX / 2.0, coordinate,
-			 resolutionX / 4.0, resolutionY / 25.0);
-			if (i > 10) {
+			 resolutionX / 5.0, resolutionY / 25.0);
+			if (endTime - System.currentTimeMillis() >= 11000) {
 				StdDraw.setPenColor(0, 0, 0);
 			} else {
 				StdDraw.setPenColor(255, 0, 0);
 			}
 			StdDraw.text(resolutionX / 2.0, coordinate, "Time left: " + timeLeft());
 			StdDraw.show();
-			StdDraw.pause(1000);
-			i--;
+			StdDraw.pause(457);  // use prime numbers to avoid performance issues
 		}
 		StdDraw.setPenColor(255, 255, 225);
 		StdDraw.filledRectangle(resolutionX / 2.0, coordinate,
