@@ -9,40 +9,37 @@ public class GUI {
 	public GUI() {
 		resolutionX = 720;
 		resolutionY = 720;
-		StdDraw.setCanvasSize(resolutionX, resolutionY);
 		num = 15;
 	}
 	public GUI(boolean debugLog) {
 		resolutionX = 720;
 		resolutionY = 720;
-		StdDraw.setCanvasSize(resolutionX, resolutionY);
 		this.debugLog = debugLog;
 		num = 15;
 	}
 	public GUI(int resolutionX, int resolutionY) {
 		this.resolutionX = resolutionX;
 		this.resolutionY = resolutionY;
-		StdDraw.setCanvasSize(resolutionX, resolutionY);
 		num = 15;
 	}
 	public GUI(int resolutionX, int resolutionY, int num, boolean debugLog) {
 		this.resolutionX = resolutionX;
 		this.resolutionY = resolutionY;
 		this.debugLog = debugLog;
-		StdDraw.setCanvasSize(resolutionX, resolutionY);
 		this.num = num;
 		if(debugLog) {
-			System.out.println("Canvas size is set to " + resolutionX + " x " + resolutionY);
 			System.out.println("board size is set to " + this.num + " x " + this.num);
 		}
 	}
 
 	public void drawCanvas() {
+		StdDraw.setCanvasSize(resolutionX, resolutionY);
 		StdDraw.setXscale(0, resolutionX);
 		StdDraw.setYscale(0, resolutionY);
 		StdDraw.setPenColor(245, 245, 245);
 		StdDraw.enableDoubleBuffering();
 		if(debugLog) {
+			System.out.println("Canvas size is set to " + resolutionX + " x " + resolutionY);
 			System.out.println("X scale is set from 0 to " + resolutionX);
 			System.out.println("Y scale is set from 0 to " + resolutionY);
 			System.out.println("Pen color is set to " + StdDraw.getPenColor());
@@ -78,6 +75,7 @@ public class GUI {
 		StdDraw.show();
 	}
 	public void drawCanvas( int scaleX, int scaleY, Color backgroundColor, Color frontGroundColor) {
+		StdDraw.setCanvasSize(resolutionX, resolutionY);
 		StdDraw.setXscale(0, scaleX);
 		StdDraw.setYscale(0, scaleY);
 		StdDraw.setPenColor(backgroundColor);
@@ -169,12 +167,13 @@ public class GUI {
 	}
 	 */
 	public static void main(String[] args) {
-		GUI gui = new GUI(540, 720, 17,true);
-		gui.drawCanvas();
+		GUI gui = new GUI(1280, 720, 17,true);
+		GUI gui2 = new GUI(540, 720, 17,true);
+		gui2.drawCanvas();
 		StdDraw.pause(2000);
 		Color bg = new Color(255, 245, 255);
 		Color fg = new Color(255, 255, 245);
-		gui.drawCanvas(540, 720, bg, fg);
+		gui.drawCanvas(1280, 720, bg, fg);
 		gui.place(0, 0, false);
 		gui.place(1, 1, true);
 		gui.place(2,	2, false);
