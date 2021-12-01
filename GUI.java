@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.text.SimpleDateFormat;
 
 public class GUI {
 	private int resolutionX;
@@ -178,14 +177,14 @@ public class GUI {
 		gui.drawCanvas(540, 720, bg, fg);
 		gui.place(0, 0, false);
 		gui.place(1, 1, true);
-		gui.place(2, 2, false);
-		gui.place(3, 3, true);
-		gui.place(4, 4, false);
-		gui.place(5, 5, true);
-		gui.place(6, 6, false);
-		gui.place(7, 7, true);
-		gui.place(8, 8, false);
-		gui.place(9, 9, true);
+		gui.place(2,	2, false);
+		gui.place(3,	3, true);
+		gui.place(4,	4, false);
+		gui.place(5,	5, true);
+		gui.place(6,	6, false);
+		gui.place(7,	7, true);
+		gui.place(8,	8, false);
+		gui.place(9,	9, true);
 		gui.place(10, 10, false);
 		gui.place(11, 11, true);
 		gui.place(12, 12, false);
@@ -193,10 +192,12 @@ public class GUI {
 		gui.place(14, 14, false);
 		gui.place(15, 15, true);
 		gui.place(16, 16, false);
-		Timer thread1 = new Timer(gui.resolutionX, gui.resolutionY, 24, 0);
-		Timer thread2 = new Timer(gui.resolutionX, gui.resolutionY, 24, 1);
-		thread1.started();
-		thread2.started();
+		Timer timer1 = new Timer(gui.resolutionX, gui.resolutionY, 24, 0);
+		Timer timer2 = new Timer(gui.resolutionX, gui.resolutionY, 24, 1);
+		Thread thread1 = new Thread(timer1);
+		Thread thread2 = new Thread(timer2);
+		timer1.started();
+		timer2.started();
 		thread1.start();
 		thread2.start();
 		System.out.println("Multiple thread timer");
