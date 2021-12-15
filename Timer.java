@@ -56,6 +56,16 @@ public class Timer extends Thread implements Runnable{
 		startTime = System.currentTimeMillis();
 		endTime = System.currentTimeMillis() + 30600; // Need time-delay to avoid performance issues
 	}
+	public void started(int millisSpent, int millisLeft) {
+		startTime = System.currentTimeMillis() - millisSpent;
+		endTime = System.currentTimeMillis() + millisLeft + 600; // Need time-delay to avoid performance issues
+	}
+	public int getTimeSpent() {
+		return (int)(System.currentTimeMillis() - startTime);
+	}
+	public int getTimeLeft() {
+		return (int)(endTime - System.currentTimeMillis());
+	}
 	@Override
 	public void run() {
 		switch (runNum) {
@@ -83,11 +93,24 @@ public class Timer extends Thread implements Runnable{
 			StdDraw.setPenColor(255, 255, 225);
 			StdDraw.filledRectangle(resolutionX / 4.0, coordinate,
 			 150, resolutionY / 25.0);
-			StdDraw.setPenColor(0, 0, 0);
+			if(getTimeSpent() <= 1740000)
+				StdDraw.setPenColor(0, 0, 0);
+			else
+				StdDraw.setPenColor(255, 0, 0);
 			StdDraw.text(resolutionX / 4.0, coordinate, "Time spent: " + timeSpent());
 			StdDraw.show();
+			if(getTimeSpent() >= 1800000)
+				break;
 			StdDraw.pause(293); // use prime numbers to avoid performance issues
 		}
+		StdDraw.pause(800);
+		StdDraw.setPenColor(255, 255, 225);
+		StdDraw.filledRectangle(resolutionX / 4.0, coordinate,
+						 150, resolutionY / 25.0);
+		StdDraw.setPenColor(255, 0, 0);
+		StdDraw.text(resolutionX / 4.0, coordinate, "Game Over!");
+		isEnd = true;
+		StdDraw.show();
 	}
 
 	public void drawTimerLeft(int fontSize, int resolutionX, int resolutionY) throws InterruptedException {
@@ -96,12 +119,12 @@ public class Timer extends Thread implements Runnable{
 		StdDraw.setFont(font);
 		StdDraw.pause(300);
 		isEnd = false;
-		while(!timeLeft().equals("Time's up!") && !isPlaced) {
+		while(!timeLeft().equals("Time's up!") && !isPlaced && !isEnd) {
 
 			StdDraw.setPenColor(255, 255, 225);
 			StdDraw.filledRectangle(resolutionX / 4.0, coordinate,
 			 150, resolutionY / 25.0);
-			if (endTime - System.currentTimeMillis() >= 11000) {
+			if (getTimeLeft() >= 11000) {
 				StdDraw.setPenColor(0, 0, 0);
 			} else {
 				// isPlaced = true; // test case
