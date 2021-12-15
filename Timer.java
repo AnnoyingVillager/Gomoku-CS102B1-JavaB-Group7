@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.text.SimpleDateFormat;
 
-public class Timer implements Runnable{
+public class Timer extends Thread implements Runnable{
 	private long startTime;
 	private int resolutionX = 720;
 	private int resolutionY = 720;
@@ -10,6 +10,7 @@ public class Timer implements Runnable{
 	private Thread t;
 	private  long endTime;
 	static boolean isPlaced;
+	static boolean isEnd;
 
 	public Timer() { }
 	public Timer(int resolutionX, int resolutionY, int fontSize, int runNum) {
@@ -19,6 +20,18 @@ public class Timer implements Runnable{
 		this.runNum = runNum;
 	}
 
+	public static boolean isEnd() {
+		return isEnd;
+	}
+	public static boolean isPlaced() {
+		return isPlaced;
+	}
+	public static void setPlaced(boolean b) {
+		isPlaced = b;
+	}
+	public static void setEnd(boolean b) {
+		isEnd = b;
+	}
 	public void start() {
 		if (t == null) {
 			t = new Thread (this, "threadName");
@@ -50,7 +63,11 @@ public class Timer implements Runnable{
 				drawTimer(fontSize ,resolutionX, resolutionY);
 				break;
 			case 1:
-				drawTimerLeft(fontSize ,resolutionX, resolutionY);
+				try {
+					drawTimerLeft(fontSize ,resolutionX, resolutionY);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				break;
 			default:
 				System.out.println("runNum error");
@@ -62,7 +79,7 @@ public class Timer implements Runnable{
 		double coordinate = resolutionY * 0.94;
 		Font font = new Font("Microsoft JhengHei", Font.PLAIN ,fontSize);
 		StdDraw.setFont(font);
-		while(true) {
+		while(!isEnd) {
 			StdDraw.setPenColor(255, 255, 225);
 			StdDraw.filledRectangle(resolutionX / 4.0, coordinate,
 			 150, resolutionY / 25.0);
@@ -73,12 +90,14 @@ public class Timer implements Runnable{
 		}
 	}
 
-	public void drawTimerLeft(int fontSize, int resolutionX, int resolutionY) {
+	public void drawTimerLeft(int fontSize, int resolutionX, int resolutionY) throws InterruptedException {
 		double coordinate = resolutionY * 0.06;
 		Font font = new Font("Microsoft JhengHei", Font.PLAIN ,fontSize);
 		StdDraw.setFont(font);
 		StdDraw.pause(300);
+		isEnd = false;
 		while(!timeLeft().equals("Time's up!") && !isPlaced) {
+
 			StdDraw.setPenColor(255, 255, 225);
 			StdDraw.filledRectangle(resolutionX / 4.0, coordinate,
 			 150, resolutionY / 25.0);
@@ -98,11 +117,12 @@ public class Timer implements Runnable{
 					150, resolutionY / 25.0);
 			StdDraw.setPenColor(255, 0, 0);
 			StdDraw.text(resolutionX / 4.0, coordinate, "Time's up!");
-			// System.out.println("Game Over");
+			isEnd = true;
+			System.out.println("Game Over");
 			StdDraw.show();
+			Thread.sleep(1000);
 		}
 		isPlaced = false;
-
 	}
 	public static void main(String[] args) throws InterruptedException {
 		Timer timer = new Timer();
