@@ -5,9 +5,9 @@ import java.util.EmptyStackException;
 import java.util.TimerTask;
 import java.util.Timer;
 
-public class Gomoku {
+public final class Gomoku {
 	private static int windowsStatus = 0;
-	// startWindows = 0 ; gameWindows = 1 ; gamePauseWindows = 2 ; settingWindows = 3 ; noSavesWindows = 4 ; exitSaveReminder = 5;
+	// startWindows = 0 ; gameWindows = 1 ; gamePauseWindows = 2 ; settingWindows = 3 ; noSavesWindows = 4 ; exitSaveReminder = 5; winnerWindows = 6;
 	private static boolean isGamePause = false;//for Timer
 	private static int x;
 	private static int y;
@@ -20,19 +20,27 @@ public class Gomoku {
 	public static int tempY = 0;
 	public static int lastX = 0;
 	public static int lastY = 0;
+	public static int winnerColor = 0;
 	public static boolean enableForbidden = true;
 	public static boolean isSaved = false;
+	public static boolean isGaming = false;
 	public static boolean isFromGameWindows = false;
 	public static boolean isFromGamePauseWindows = false;
 	public static boolean isFromBackToMenu = false;
 	public static boolean isFromExit = false;
+	public static boolean isWin = false;
+	public static boolean isPlayerDrawn = false;
+	public static boolean isCleared = true;
+	public static boolean isDrawn = false;
+	public static boolean isTimerDrawn = false;
 
-	public static void main(String[] args) throws AWTException {
+	public static void main(String[] args) throws AWTException, InterruptedException {
 		GUI startWindows = new GUI(540, 720);
 		GUI gameWindows = new GUI(1280, 720);
 		GUI settingWindows = new GUI(540,720);
 		GUI noSavesWindows = new GUI(450,250);
 		GUI exitSaveReminder = new GUI(450,250);
+		GUI winnerWindows = new GUI(1280,720);
 
 		ChessBoard board = new ChessBoard(15);
 
@@ -41,7 +49,10 @@ public class Gomoku {
 		startWindows.generateStartWindows();
 		startWindows.drawStart();
 		StdDraw.show();
-
+		TimerPlus timer1 = new TimerPlus(1280, 720, 28, 0);
+		TimerPlus timer2 = new TimerPlus(1280, 720, 28, 1);
+		final Thread[] thread1 = {new Thread(timer1)};
+		final Thread[] thread2 = {new Thread(timer2)};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//鼠标监听线程段开始
@@ -51,14 +62,28 @@ public class Gomoku {
 			public void run() {
 				mouseX = StdDraw.mouseX();
 				mouseY = StdDraw.mouseY();
+				color = board.getMoveTimes() % 2 + 1;
 				//System.out.println(mouseX+" "+mouseY+"    ");
-
 				switch (windowsStatus){// startWindows = 0 ; gameWindows = 1 ; gamePauseWindows = 2 ; settingWindows = 3 ; noSavesWindows = 4 ; exitSaveReminder = 5;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// StartWindows
 					case 0:
+						if(!isCleared) {
+							startWindows.drawStart();
+							isCleared = true;
+						}
+						if(!timer1.isPaused() || !timer2.isPaused()) {
+							timer1.reset();
+							timer2.reset();
+							thread1[0].interrupt();
+							thread2[0].interrupt();
+						}
 						//Button 01
-						if (93<mouseX &&mouseX<456  &&  473<mouseY && mouseY<537){
-							startWindows.drawStartPress(1);
+						if (93<mouseX && mouseX<456  &&  473<mouseY && mouseY<537){
+							if(!isDrawn) {
+								startWindows.drawStartPress(1);
+								isDrawn = true;
+							}
+
 							if (StdDraw.isMousePressed()){
 								//Button 01 Command
 								gameWindows.generateGameWindows();
@@ -73,28 +98,43 @@ public class Gomoku {
 								gameWindows.drawCanvas();
 								gameWindows.drawMenuPause();
 								windowsStatus = 2;
+								isGaming = false;
 								isSaved = true;
 							}
-						}else {
-							startWindows.drawStart(1);
+						}
+						else {
+
 							//Button 02
 							if (93<mouseX &&mouseX<456  &&  362<mouseY && mouseY<426){
-								startWindows.drawStartPress(2);
+								if(!isDrawn) {
+									startWindows.drawStartPress(2);
+									isDrawn = true;
+								}
+
 								if (StdDraw.isMousePressed()){
 									try {
+										Thread.sleep(500);
 										board.load();
+										isWin = false;
+										color = board.getMoveTimes() % 2 + 1;
+										board.initializeSteps();
+										timer1.reset();
+										timer2.reset();
+										timer1.setTimeSpent(board.getTimeSpent());
+										timer2.setTimeLeft(board.getTimeLeft());
 										gameWindows.generateGameWindows();
 										isSaved = true;
-										if (StdDraw.isMousePressed()){
-											try {
-												mouseReset();
-											} catch (AWTException e) {
-												e.printStackTrace();
-											}
-										}
+										// if (StdDraw.isMousePressed()){
+										// 	try {
+										// 		mouseReset();
+										// 	} catch (AWTException e) {
+										// 		e.printStackTrace();
+										// 	}
+										// }
 										gameWindows.drawCanvas();
 										gameWindows.drawMenuPause();
 										windowsStatus = 2;
+										isGaming = false;
 									} catch (FileNotFoundException e1) {
 										if (StdDraw.isMousePressed()){
 											try {
@@ -113,6 +153,9 @@ public class Gomoku {
 											}
 										}
 										windowsStatus = 4;
+										isGaming = false;
+									} catch (InterruptedException e) {
+										e.printStackTrace();
 									}
 									System.out.println("Button 02 is CLICKED");
 									if (StdDraw.isMousePressed()){
@@ -124,10 +167,13 @@ public class Gomoku {
 									}
 								}
 							}else {
-								startWindows.drawStart(2);
 								//Button 03
 								if (93<mouseX &&mouseX<456  &&  259<mouseY && mouseY<318){
-									startWindows.drawStartPress(3);
+									if(!isDrawn) {
+										startWindows.drawStartPress(3);
+										isDrawn = true;
+									}
+
 									if (StdDraw.isMousePressed()){
 										//Button 03 Command
 										System.out.println("Button 03 is CLICKED");
@@ -140,10 +186,14 @@ public class Gomoku {
 										}
 									}
 								}else {
-									startWindows.drawStart(3);
+
 									//Button 04
 									if (93<mouseX &&mouseX<253  &&  150<mouseY && mouseY<210){
-										startWindows.drawStartPress(4);
+										if(!isDrawn) {
+											startWindows.drawStartPress(4);
+											isDrawn = true;
+										}
+
 										if (StdDraw.isMousePressed()){
 											//Button 04 Command
 											settingWindows.drawOptions();
@@ -155,18 +205,30 @@ public class Gomoku {
 												}
 											}
 											windowsStatus = 3;
+											isGaming = false;
 										}
 									}else {
-										startWindows.drawStart(4);
+
 										//Button 05
 										if (290<mouseX &&mouseX<456  &&  150<mouseY && mouseY<210){
-											startWindows.drawStartPress(5);
+											if(!isDrawn) {
+												startWindows.drawStartPress(5);
+												isDrawn = true;
+											}
+
 											if (StdDraw.isMousePressed()){
 												//Button 05 Command
 												System.exit(0);
 											}
 										}else {
-											startWindows.drawStart(5);
+											if(isDrawn) {
+												startWindows.drawStart(1);
+												startWindows.drawStart(2);
+												startWindows.drawStart(3);
+												startWindows.drawStart(4);
+												startWindows.drawStart(5);
+												isDrawn = false;
+											}
 										}
 									}
 								}
@@ -175,8 +237,72 @@ public class Gomoku {
 						break;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GameWindows
 					case 1:
+						if(TimerPlus.isEnd()) {
+							isGaming = false;
+							if (color == 1) {
+								winnerColor = 2;
+							}else {
+								if (color == 2){
+									winnerColor = 1;
+								}else {
+									winnerColor = 0;
+								}
+							}
+							try {
+								System.out.println(winnerColor);
+								winnerWindows.drawMenuWin(winnerColor);
+								winnerWindows.drawMenuWinTitle(winnerColor);
+								winnerWindows.drawMenuWin(winnerColor);
+								winnerWindows.drawMenuWinTitle(winnerColor);
+								winnerWindows.drawMenuWin(winnerColor);
+								winnerWindows.drawMenuWinTitle(winnerColor);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							windowsStatus = 6;
+						}
+						else {
+							if(thread1[0] == null) {
+								thread1[0] = new Thread(timer1);
+							}
+							if(thread2[0] == null) {
+								thread2[0] = new Thread(timer2);
+							}
+							if(thread1[0].getState() == Thread.State.TERMINATED) {
+								thread1[0] = new Thread(timer1);
+							}
+							if(thread2[0].getState() == Thread.State.TERMINATED) {
+								thread2[0] = new Thread(timer2);
+							}
+							if(!timer1.isStarted()) {
+								timer1.startedOrContinue();
+							}
+							if(!timer2.isStarted()) {
+								timer2.startedOrContinue();
+							}
+							if(thread1[0].getState() == Thread.State.NEW) {
+								thread1[0].start();
+								timer1.setStart(true);
+							}
+							if(thread2[0].getState() == Thread.State.NEW) {
+								thread2[0].start();
+								timer2.setStart(true);
+							}
+						}
+						if(!isPlayerDrawn) {
+							if(!isWin) {
+								try {
+									Thread.sleep(200);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								gameWindows.drawPlayer(board.getMoveTimes() % 2 == 0);
+								gameWindows.drawPlayer(board.getMoveTimes() % 2 == 0);
+							}
+							isPlayerDrawn = true;
+						}
 						//拟落子位置显示及落子步骤
-						if (mouseX<700){
+						if (mouseX<700 && isGaming){
 							x = toChessGridX(mouseX);
 							y = toChessGridY(mouseY);
 							//拟落子位置显示
@@ -193,16 +319,26 @@ public class Gomoku {
 								gameWindows.drawChessReverse(lastX,lastY);
 								lastX = tempX;
 								lastY = tempY;
+								GUI.isChessDrawn = false;
 							}
-						}else {
-							gameWindows.drawChessReverse(lastX,lastY);
+						}
+						else {
+							if(GUI.isChessDrawn) {
+								gameWindows.drawChessReverse(lastX,lastY);
+								GUI.isChessDrawn = false;
+							}
 							//按钮01
 							if (844<mouseX &&mouseX<1204  &&  473<mouseY && mouseY<537){
-								gameWindows.drawMenuPress(1);
+								if(!isDrawn) {
+									gameWindows.drawMenuPress(1);
+									isDrawn = true;
+								}
+
 								if (StdDraw.isMousePressed()){
 									//Button 01 Command
 									gameWindows.drawMenuPause();
 									windowsStatus = 2;
+									isGaming = false;
 									if (StdDraw.isMousePressed()){
 										try {
 											mouseReset();
@@ -211,33 +347,43 @@ public class Gomoku {
 										}
 									}
 								}
-							}else {
-								gameWindows.drawMenu(1);
+							}
+							else {
 								//按钮02
 								if (844<mouseX &&mouseX<1204  &&  362<mouseY && mouseY<426){
-									gameWindows.drawMenuPress(2);
-									if (StdDraw.isMousePressed()){
-										//Button 02 Command
-										System.out.println("Button 02 is CLICKED");
-										try {
-											board.save();
-											isSaved = true;
-										} catch (FileNotFoundException e) {
-											e.printStackTrace();
-										}
-										if (StdDraw.isMousePressed()){
-											try {
-												mouseReset();
-											} catch (AWTException e) {
-												e.printStackTrace();
-											}
-										}
-									}
+									//gameWindows.drawMenuPress(2);
+									//gameWindows.drawMenu(1);
+									//gameWindows.drawMenu(3);
+									//gameWindows.drawMenu(4);
+									//gameWindows.drawMenu(5);
+									//if (StdDraw.isMousePressed()){
+									//	//Button 02 Command
+									//	System.out.println("Button 02 is CLICKED");
+									//	try {
+									//		board.setTimeSpent(timer1.getTimeSpent());
+									//		board.setTimeLeft(timer2.getTimeLeft());
+									//		board.save();
+									//		isSaved = true;
+									//	} catch (FileNotFoundException e) {
+									//		e.printStackTrace();
+									//	}
+									//	if (StdDraw.isMousePressed()){
+									//		try {
+									//			mouseReset();
+									//		} catch (AWTException e) {
+									//			e.printStackTrace();
+									//		}
+									//	}
+									//}
 								}else {
-									gameWindows.drawMenu(2);
+
 									//按钮03
 									if (844<mouseX &&mouseX<1204  &&  259<mouseY && mouseY<318){
-										gameWindows.drawMenuPress(3);
+										if(!isDrawn) {
+											gameWindows.drawMenuPress(3);
+											isDrawn = true;
+										}
+
 										if (StdDraw.isMousePressed()){
 											//Button 03 Command
 											System.out.println("Button 03 is CLICKED");
@@ -254,6 +400,7 @@ public class Gomoku {
 												}
 												exitSaveReminder.drawExitSaveReminder();
 												windowsStatus = 5;
+												isGaming = false;
 											}else {
 												startWindows.generateStartWindows();
 												if (StdDraw.isMousePressed()){
@@ -265,23 +412,39 @@ public class Gomoku {
 												}
 												startWindows.drawStart();
 												windowsStatus = 0;
+												isCleared = false;
 											}
 
 										}
 									}else {
-										gameWindows.drawMenu(3);
 										//按钮04
 										if (844<mouseX &&mouseX<1004  &&  150<mouseY && mouseY<210 && board.canUndo()){
-											gameWindows.drawMenuPress(4);
+											if(!isDrawn) {
+												gameWindows.drawMenuPress(4);
+												isDrawn = true;
+											}
+
 											if (StdDraw.isMousePressed()){
 												//Button 04 Command
 												System.out.println("Button 04 is CLICKED");
 												try {
 													board.undo();
-													gameWindows.drawChessReverse(board.getUndoX(),board.getUndoY());
-													isSaved = false;
-												}catch (EmptyStackException e){
-													System.out.println("Can not undo");
+												} catch (InterruptedException e) {
+													e.printStackTrace();
+												}
+												gameWindows.drawChessReverse(board.getUndoX(),board.getUndoY());
+												timer2.restore();
+												isSaved = false;
+												if(!isWin) {
+													try {
+														Thread.sleep(200);
+													} catch (InterruptedException e) {
+														e.printStackTrace();
+													}
+													gameWindows.drawPlayer(board.getMoveTimes() % 2 == 0);
+													System.out.println("moveTimes: " + board.getMoveTimes());
+													gameWindows.drawPlayer(board.getMoveTimes() % 2 == 0);
+													isPlayerDrawn = true;
 												}
 												if (StdDraw.isMousePressed()){
 													try {
@@ -292,10 +455,13 @@ public class Gomoku {
 												}
 											}
 										}else {
-											gameWindows.drawMenu(4);
 											//按钮05
 											if (1042<mouseX &&mouseX<1204  &&  150<mouseY && mouseY<210){
-												gameWindows.drawMenuPress(5);
+												if(!isDrawn) {
+													gameWindows.drawMenuPress(5);
+													isDrawn = true;
+												}
+
 												if (StdDraw.isMousePressed()){
 													//Button 05 Command
 													System.out.println("Button 05 is CLICKED");
@@ -312,6 +478,7 @@ public class Gomoku {
 														}
 														exitSaveReminder.drawExitSaveReminder();
 														windowsStatus = 5;
+														isGaming = false;
 													}else {
 														System.exit(0);
 													}
@@ -324,21 +491,44 @@ public class Gomoku {
 													}
 												}
 											}else {
-												gameWindows.drawMenu(5);
-												//界面还原
+												if(isDrawn) {
+													gameWindows.drawMenu(1);
+													gameWindows.drawMenu(2);
+													gameWindows.drawMenu(3);
+													gameWindows.drawMenu(4);
+													gameWindows.drawMenu(5);
+													isDrawn = false;
+												}
+
 											}
 										}
 									}
 								}
 							}
 						}
-						if (windowsStatus == 1) gameWindows.drawAllChess(board);
+						if (!GUI.isChessDrawn) {
+							gameWindows.drawAllChess(board);
+							gameWindows.drawAllChess(board);
+							gameWindows.drawAllChess(board);
+							GUI.isChessDrawn = true;
+						}
 						break;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// GameWindowsPause
 					case 2:
+						if(!timer1.isPaused() || !timer2.isPaused()) {
+							timer1.pause();
+							timer2.pause();
+							thread1[0].interrupt();
+							thread2[0].interrupt();
+						}
 						//按钮01
 						if (844<mouseX &&mouseX<1204  &&  473<mouseY && mouseY<537){
-							gameWindows.drawMenuPausePress(1);
+							if(!isDrawn) {
+								gameWindows.drawMenuPausePress(1);
+								isDrawn = true;
+							}
+
+
 							if (StdDraw.isMousePressed()){
 								//Button 01 Command
 								gameWindows.drawMenu();
@@ -350,17 +540,25 @@ public class Gomoku {
 									}
 								}
 								windowsStatus = 1;
+								isGaming = true;
 							}
-						}else {
-							gameWindows.drawMenuPause(1);
+						}
+						else {
 							//按钮02
 							if (844<mouseX &&mouseX<1204  &&  362<mouseY && mouseY<426){
-								gameWindows.drawMenuPausePress(2);
+								if(!isDrawn) {
+									gameWindows.drawMenuPausePress(2);
+									isDrawn = true;
+								}
+
 								if (StdDraw.isMousePressed()){
 									//Button 02 Command
 									System.out.println("Button 02 is CLICKED");
 									try {
+										board.setTimeSpent(timer1.getTimeSpent());
+										board.setTimeLeft(timer2.getTimeLeft());
 										board.save();
+
 										isSaved = true;
 									} catch (FileNotFoundException e) {
 										e.printStackTrace();
@@ -374,10 +572,13 @@ public class Gomoku {
 									}
 								}
 							}else {
-								gameWindows.drawMenuPause(2);
 								//按钮03
 								if (844<mouseX &&mouseX<1204  &&  259<mouseY && mouseY<318){
-									gameWindows.drawMenuPausePress(3);
+									if(!isDrawn) {
+										gameWindows.drawMenuPausePress(3);
+										isDrawn = true;
+									}
+
 									if (StdDraw.isMousePressed()){
 										//Button 03 Command
 										System.out.println("Button 03 is CLICKED");
@@ -387,6 +588,7 @@ public class Gomoku {
 											exitSaveReminder.generateExitSaveReminderWindows();
 											exitSaveReminder.drawExitSaveReminder();
 											windowsStatus = 5;
+											isGaming = false;
 											if (StdDraw.isMousePressed()){
 												try {
 													mouseReset();
@@ -394,10 +596,12 @@ public class Gomoku {
 													e.printStackTrace();
 												}
 											}
-										}else {
+										}
+										else {
 											startWindows.generateStartWindows();
 											startWindows.drawStart();
 											windowsStatus = 0;
+											isGaming = false;
 											if (StdDraw.isMousePressed()){
 												try {
 													mouseReset();
@@ -414,8 +618,8 @@ public class Gomoku {
 											}
 										}
 									}
-								}else {
-									gameWindows.drawMenuPause(3);
+								}
+								else {
 									//按钮04
 									if (844<mouseX &&mouseX<1004  &&  150<mouseY && mouseY<210){
 										//gameWindows.drawMenuPausePress(4);
@@ -430,11 +634,15 @@ public class Gomoku {
 										//		}
 										//	}
 										//}
-									}else {
-										gameWindows.drawMenuPause(4);
+									}
+									else {
 										//按钮05
 										if (1042<mouseX &&mouseX<1204  &&  150<mouseY && mouseY<210){
-											gameWindows.drawMenuPausePress(5);
+											if(!isDrawn) {
+												gameWindows.drawMenuPausePress(5);
+												isDrawn = true;
+											}
+
 											if (StdDraw.isMousePressed()){
 												//Button 05 Command
 												System.out.println("Button 05 is CLICKED");
@@ -451,6 +659,7 @@ public class Gomoku {
 													}
 													exitSaveReminder.drawExitSaveReminder();
 													windowsStatus = 5;
+													isGaming = false;
 												}else {
 													System.exit(0);
 												}
@@ -462,19 +671,51 @@ public class Gomoku {
 													}
 												}
 											}
-										}else {
-											gameWindows.drawMenuPause(5);
+										}
+										else {
+											if(isDrawn) {
+												gameWindows.drawMenuPause(1);
+												gameWindows.drawMenuPause(2);
+												gameWindows.drawMenuPause(3);
+												gameWindows.drawMenuPause(4);
+												gameWindows.drawMenuPause(5);
+												isDrawn = false;
+											}
+
 										}
 									}
 								}
 							}
 						}
-						if (windowsStatus == 2) gameWindows.drawAllChess(board);
+						if (windowsStatus == 2 && !GUI.isChessDrawn)  {
+							try {
+								Thread.sleep(200);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							gameWindows.drawAllChess(board);
+							gameWindows.drawAllChess(board);
+							gameWindows.drawAllChess(board);
+							if(!isWin) {
+								try {
+									Thread.sleep(200);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								gameWindows.drawPlayer(board.getMoveTimes() % 2 == 0);
+								gameWindows.drawPlayer(board.getMoveTimes() % 2 == 0);
+							}
+							isPlayerDrawn = true;
+							GUI.isChessDrawn = true;
+						}
 						break;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// SettingWindows
 					case 3:
 						if (93<mouseX && mouseX<456  &&  473<mouseY && mouseY<537){
-							settingWindows.drawOptionsPress(1);
+							if(!isDrawn) {
+								settingWindows.drawOptionsPress(1);
+								isDrawn = true;
+							}
 							if (StdDraw.isMousePressed()){
 								//Button 01 Command
 								System.out.println("Button 01 is CLICKED");
@@ -482,6 +723,8 @@ public class Gomoku {
 								gameWindows.setBoardSize(15);
 								broadSize = 15;
 								stepLength = 504.0/(broadSize-1);
+								settingWindows.drawOptions(2);
+								settingWindows.drawOptions(3);
 								if (StdDraw.isMousePressed()){
 									try {
 										mouseReset();
@@ -490,11 +733,15 @@ public class Gomoku {
 									}
 								}
 							}
-						}else {
-							settingWindows.drawOptions(1);
+						}
+						else {
 							//Button 02
 							if (93<mouseX && mouseX<456  &&  362<mouseY && mouseY<426){
-								settingWindows.drawOptionsPress(2);
+								if(!isDrawn) {
+									settingWindows.drawOptionsPress(2);
+									isDrawn = true;
+								}
+
 								if (StdDraw.isMousePressed()){
 									//Button 02 Command
 									System.out.println("Button 02 is CLICKED");
@@ -502,6 +749,8 @@ public class Gomoku {
 									gameWindows.setBoardSize(17);
 									broadSize = 17;
 									stepLength = 504.0/(broadSize-1);
+									settingWindows.drawOptions(1);
+									settingWindows.drawOptions(3);
 									if (StdDraw.isMousePressed()){
 										try {
 											mouseReset();
@@ -511,10 +760,12 @@ public class Gomoku {
 									}
 								}
 							}else {
-								settingWindows.drawOptions(2);
 								//Button 03
 								if (93<mouseX && mouseX<456  &&  259<mouseY && mouseY<318){
-									settingWindows.drawOptionsPress(3);
+									if(!isDrawn) {
+										settingWindows.drawOptionsPress(3);
+										isDrawn = true;
+									}
 									if (StdDraw.isMousePressed()){
 										//Button 03 Command
 										System.out.println("Button 03 is CLICKED");
@@ -522,6 +773,8 @@ public class Gomoku {
 										gameWindows.setBoardSize(19);
 										broadSize = 19;
 										stepLength = 504.0/(broadSize-1);
+										settingWindows.drawOptions(1);
+										settingWindows.drawOptions(2);
 										if (StdDraw.isMousePressed()){
 											try {
 												mouseReset();
@@ -531,10 +784,13 @@ public class Gomoku {
 										}
 									}
 								}else {
-									settingWindows.drawOptions(3);
 									//Button 04
 									if (93<mouseX && mouseX<253  &&  150<mouseY && mouseY<210){
-										settingWindows.drawOptionsPress(4);
+										if(!isDrawn) {
+											settingWindows.drawOptionsPress(4);
+											isDrawn = true;
+										}
+
 										if (StdDraw.isMousePressed()){
 											//Button 04 Command
 											System.out.println("Button 04 is CLICKED");
@@ -552,15 +808,18 @@ public class Gomoku {
 											}
 										}
 									}else {
-										settingWindows.drawOptions(4);
 										//Button 05
 										if (290<mouseX && mouseX<456  &&  150<mouseY && mouseY<210){
-											settingWindows.drawOptionsPress(5);
+											if(!isDrawn) {
+												settingWindows.drawOptionsPress(5);
+												isDrawn = true;
+											}
 											if (StdDraw.isMousePressed()){
 												//Button 05 Command
 												System.out.println("Button 05 is CLICKED");
 												startWindows.drawStart();
 												windowsStatus = 0;
+												isGaming = false;
 												if (StdDraw.isMousePressed()){
 													try {
 														mouseReset();
@@ -570,7 +829,14 @@ public class Gomoku {
 												}
 											}
 										}else {
-											settingWindows.drawOptions(5);
+											if(isDrawn) {
+												settingWindows.drawOptions(1);
+												settingWindows.drawOptions(2);
+												settingWindows.drawOptions(3);
+												settingWindows.drawOptions(4);
+												settingWindows.drawOptions(5);
+												isDrawn = false;
+											}
 										}
 									}
 								}
@@ -583,6 +849,12 @@ public class Gomoku {
 						break;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// NoSavesWindows
 					case 4:
+						if(!timer1.isPaused() || !timer2.isPaused()) {
+							timer1.reset();
+							timer2.reset();
+							thread1[0].interrupt();
+							thread2[0].interrupt();
+						}
 						if (49<mouseX && mouseX<412  &&  69<mouseY && mouseY<130){
 							noSavesWindows.drawNoSavesPress();
 							if (StdDraw.isMousePressed()){
@@ -604,25 +876,39 @@ public class Gomoku {
 								}
 								startWindows.drawStart();
 								windowsStatus = 0;
+								isGaming = false;
 							}
-						}else {
+						}
+						else {
 							noSavesWindows.drawNoSaves();
 						}
 						break;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// ExitSaveReminderFromGameWindows
 					case 5:
+						if(!timer1.isPaused() || !timer2.isPaused()) {
+							timer1.pause();
+							timer2.pause();
+							thread1[0].interrupt();
+							thread2[0].interrupt();
+						}
+						//Button 01
 						if (34<mouseX && mouseX<146  &&  61<mouseY && mouseY<104){
 							exitSaveReminder.drawExitSaveReminderPress(1);
+							exitSaveReminder.drawExitSaveReminder(2);
+							exitSaveReminder.drawExitSaveReminder(3);
 							if (StdDraw.isMousePressed()){
 								//Button 01 Command
 								System.out.println("Button 01 is CLICKED");
 								try {
+									board.setTimeSpent(timer1.getTimeSpent());
+									board.setTimeLeft(timer2.getTimeLeft());
 									board.save();
 									if (isFromBackToMenu){
 										startWindows.generateStartWindows();
 										isFromBackToMenu = false;
 										startWindows.drawStart();
 										windowsStatus = 0;
+										isGaming = false;
 										if (StdDraw.isMousePressed()){
 											try {
 												mouseReset();
@@ -639,10 +925,14 @@ public class Gomoku {
 									e.printStackTrace();
 								}
 							}
-						}else {
+						}
+						else {
 							exitSaveReminder.drawExitSaveReminder(1);
+							//Button 02
 							if (169<mouseX && mouseX<285  &&  61<mouseY && mouseY<104){
 								exitSaveReminder.drawExitSaveReminderPress(2);
+								exitSaveReminder.drawExitSaveReminder(1);
+								exitSaveReminder.drawExitSaveReminder(3);
 								if (StdDraw.isMousePressed()){
 									//Button 02 Command
 									if (isFromBackToMenu){
@@ -650,6 +940,7 @@ public class Gomoku {
 										isFromBackToMenu = false;
 										startWindows.drawStart();
 										windowsStatus = 0;
+										isGaming = false;
 										if (StdDraw.isMousePressed()){
 											try {
 												mouseReset();
@@ -673,8 +964,11 @@ public class Gomoku {
 								}
 							}else {
 								exitSaveReminder.drawExitSaveReminder(2);
+								//Button 03
 								if (308<mouseX && mouseX<420  &&  61<mouseY && mouseY<104){
 									exitSaveReminder.drawExitSaveReminderPress(3);
+									exitSaveReminder.drawExitSaveReminder(1);
+									exitSaveReminder.drawExitSaveReminder(2);
 									if (StdDraw.isMousePressed()){
 										//Button 03 Command
 										System.out.println("Button 03 is CLICKED");
@@ -691,7 +985,8 @@ public class Gomoku {
 											gameWindows.drawCanvas();
 											gameWindows.drawMenu();
 											gameWindows.drawAllChess(board);
-											windowsStatus = 1;
+											windowsStatus = 2;
+											isGaming = true;
 										}else {
 											if (isFromGamePauseWindows){
 												gameWindows.generateGameWindows();
@@ -707,6 +1002,7 @@ public class Gomoku {
 												gameWindows.drawMenuPause();
 												gameWindows.drawAllChess(board);
 												windowsStatus = 2;
+												isGaming = false;
 											}
 										}
 									}
@@ -716,45 +1012,197 @@ public class Gomoku {
 							}
 						}
 						break;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// winnerWindows
+					case 6:
+						if(thread1[0].getState() != Thread.State.TERMINATED && thread2[0].getState() != Thread.State.TERMINATED) {
+							thread1[0].interrupt();
+							thread2[0].interrupt();
+							System.out.println("test");
+						}
+						gameWindows.drawAllChess(board);
+						if(!isTimerDrawn) {
+							isTimerDrawn = true;
+							try {
+								timer1.drawTimer(30, 1280, 720);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							try {
+								timer2.drawTimerLeft(30, 1280, 720);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							try {
+								timer1.drawTimer(30, 1280, 720);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							try {
+								timer2.drawTimerLeft(30, 1280, 720);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						//按钮01
+						if (844<mouseX &&mouseX<1204  &&  473<mouseY && mouseY<537){
+							if(!isDrawn) {
+								winnerWindows.drawMenuWinPress(1);
+								isDrawn = true;
+							}
 
+							if (StdDraw.isMousePressed()){
+								//Button 01 Command
+								gameWindows.drawCanvas();
+								gameWindows.drawMenu();
+								if (StdDraw.isMousePressed()){
+									try {
+										mouseReset();
+									} catch (AWTException e) {
+										e.printStackTrace();
+									}
+								}
+								board.initializeBoard();
+								timer1.reset();
+								timer2.reset();
+								windowsStatus = 1;
+								isTimerDrawn = false;
+								isGaming = true;
+								isWin = false;
+								isPlayerDrawn = false;
+								color = 1;
+							}
+						}
+						else {
+							//按钮02
+							if (844<mouseX &&mouseX<1204  &&  362<mouseY && mouseY<426){
+								//按纽02禁用
+							}else {
+								//按钮03
+								if (844<mouseX &&mouseX<1204  &&  259<mouseY && mouseY<318){
+									if(!isDrawn) {
+										winnerWindows.drawMenuWinPress(3);
+										isDrawn = true;
+									}
+									if (StdDraw.isMousePressed()){
+										//Button 03 Command
+										startWindows.generateStartWindows();
+										startWindows.drawStart();
+										if (StdDraw.isMousePressed()){
+											try {
+												mouseReset();
+											} catch (AWTException e) {
+												e.printStackTrace();
+											}
+										}
+										windowsStatus = 0;
+										isTimerDrawn = false;
+										isGaming = false;
+									}
+								}else {
+									//按钮04
+									if (844<mouseX &&mouseX<1004  &&  150<mouseY && mouseY<210 && board.canUndo()){
+										//winnerWindows.drawMenuWinPress(4);
+										//winnerWindows.drawMenuWinUnPress(1);
+										//winnerWindows.drawMenuWinUnPress(3);
+										//winnerWindows.drawMenuWinUnPress(5);
+										//if (StdDraw.isMousePressed()){
+										//	//Button 04 Command
+										//	gameWindows.drawMenu();
+										//	board.undo();
+										//	gameWindows.drawChessReverse(board.getUndoX(),board.getUndoY());
+										//	if (StdDraw.isMousePressed()){
+										//		try {
+										//			mouseReset();
+										//		} catch (AWTException e) {
+										//			e.printStackTrace();
+										//		}
+										//	}
+										//	windowsStatus = 1;
+										//	isGaming = true;
+										//}
+									}else {
+										//按钮05
+										if (1042<mouseX &&mouseX<1204  &&  150<mouseY && mouseY<210){
+											if(!isDrawn) {
+												winnerWindows.drawMenuWinPress(5);
+												isDrawn = true;
+											}
+											if(StdDraw.isMousePressed()) {
+												System.exit(0);
+											}
+										}else {
+											winnerWindows.drawMenuWinUnPress(1);
+											winnerWindows.drawMenuWinUnPress(2);
+											winnerWindows.drawMenuWinUnPress(3);
+											winnerWindows.drawMenuWinUnPress(4);
+											winnerWindows.drawMenuWinUnPress(5);
+											try {
+												winnerWindows.drawMenuWinTitle(winnerColor);
+											} catch (InterruptedException e) {
+												e.printStackTrace();
+											}
+											isDrawn = false;
+										}
+									}
+								}
+							}
+						}
+						break;
 				}//switch的大括号
-				System.out.println(windowsStatus);
+				// System.out.println(windowsStatus);
 				StdDraw.show();
 			}
-		},0,1);
+		},0,33);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		//鼠标监听线程段结束
 		while (true){
-			if (StdDraw.isMousePressed() && windowsStatus==1 && mouseX<700){
+			if (StdDraw.isMousePressed() && windowsStatus==1 && isGaming && mouseX<700){
 				System.out.println("Clicking");
 				//落子模块
 				if (board.isBlocked(x,y)){
 					System.out.println("is blocked");
 				}else {
-					if (board.isForbidden(x,y) && enableForbidden){
+					if (board.isForbidden(x,y) && enableForbidden && color == 1){
 						System.out.println("is Forbidden");
+						continue;
 					}else {
+						thread2[0].interrupt();
+						timer2.restore();
+						timer2.restore();
 						board.playChess(x,y);
 						board.stepRecord(x,y);
+						GUI.isChessDrawn = false;
+						isPlayerDrawn = false;
 						isSaved = false;
 					}
 				}
 				//输赢判断
 				if (board.isWin(x,y)){
-					//mouse.cancel();
-					StdDraw.clear();
-					gameWindows.drawCanvas();
-					gameWindows.drawCanvas();
-					gameWindows.drawCanvas();
-					gameWindows.drawMenu();
+					isWin = true;
+					System.out.println("Game Over!");
+					TimerPlus.setEnd(true);
+					Thread.sleep(200);
 					gameWindows.drawAllChess(board);
-					gameWindows.drawAllChess(board);
-					gameWindows.drawAllChess(board);
-					StdDraw.show();
-					System.out.println("Game over");
-					break;
+					if (color == 1) {
+						winnerColor = 2;
+					}else {
+						if (color == 2){
+							winnerColor = 1;
+						}else {
+							winnerColor = 0;
+						}
+					}
+					isGaming = false;
+					winnerWindows.drawMenuWin(winnerColor);
+					winnerWindows.drawMenuWinTitle(winnerColor);
+					winnerWindows.drawMenuWin(winnerColor);
+					winnerWindows.drawMenuWinTitle(winnerColor);
+					winnerWindows.drawMenuWin(winnerColor);
+					winnerWindows.drawMenuWinTitle(winnerColor);
+					windowsStatus = 6;
 				}
+
 				if (StdDraw.isMousePressed()){
 					try {
 						mouseReset();

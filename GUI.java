@@ -10,6 +10,7 @@ public class GUI {
 	private Color backgroundColor;
 	private Color frontColor;
 	private Color boardLineColor = new Color(192, 192, 192);
+	public static boolean isChessDrawn = false;
 
 
 
@@ -27,8 +28,8 @@ public class GUI {
 	public GUI(int sizeX, int sizeY) {
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
-		backgroundColor = new Color(255,245,255);
-		frontColor = new Color(255,255,245);
+		backgroundColor = new Color(235,245,255);
+		frontColor = new Color(245,250,255);
 		boardSize = 15;
 	}
 
@@ -68,16 +69,15 @@ public class GUI {
 	}
 
 	public void drawStart(){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
-
 		double posXTitle = 0.50*sizeX + shiftX;
 		double posYTitle = 0.90*sizeY + shiftY;
-		StdDraw.setPenColor(Color.white);
-		StdDraw.filledRectangle(posXTitle,posYTitle,150,30);
-		drawTitle(posXTitle,posYTitle,40,"Gomoku Game");
+		StdDraw.setPenColor(235,245,255);
+		StdDraw.filledRectangle(270, 360,270,360);
 		StdDraw.setPenColor(Color.black);
+		drawTitle(posXTitle,posYTitle,30,"Gomoku Game");
 		double posXButton01 = 0.50*sizeX + shiftX;
 		double posYButton01 = 0.70*sizeY + shiftY;
 		drawButton(posXButton01,posYButton01,fontSize,"Start Game");
@@ -95,7 +95,7 @@ public class GUI {
 		drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
 	}
 	public void drawStart(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -133,7 +133,7 @@ public class GUI {
 
 	}
 	public void drawStartPress(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -166,14 +166,16 @@ public class GUI {
 		}
 	}
 
-	public void drawMenu() {
-		int fontSize = 28;//按钮字体大小
+	public void drawMenu(){
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
 		double posXTitle = 0.80*sizeX + shiftX;
 		double posYTitle = 0.85*sizeY + shiftY;
-		drawTitle(posXTitle,posYTitle,40,"Gomoku Game");
+		StdDraw.setPenColor(235,245,255);
+		StdDraw.filledRectangle(posXTitle,posYTitle,200,50);
+		drawTitle(posXTitle,posYTitle,30,"Gomoku Game");
 		double posXButton01 = 0.80*sizeX + shiftX;
 		double posYButton01 = 0.70*sizeY + shiftY;
 		drawButton(posXButton01,posYButton01,fontSize,"Pause Game");
@@ -191,7 +193,7 @@ public class GUI {
 		drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
 	}
 	public void drawMenu(int buttonNum) {
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -229,13 +231,13 @@ public class GUI {
 
 	}
 	public void drawMenuPress(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
 		double posXTitle = 0.80*sizeX + shiftX;
 		double posYTitle = 0.85*sizeY + shiftY;
-		drawTitle(posXTitle,posYTitle,40,"Gomoku Game");
+		drawTitle(posXTitle,posYTitle,30,"Gomoku Game");
 
 		switch (buttonNum){
 			case 1:
@@ -266,13 +268,14 @@ public class GUI {
 		}
 
 	}
+
 	public void drawMenuPause(){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 		double posXTitle = 0.80*sizeX + shiftX;
 		double posYTitle = 0.85*sizeY + shiftY;
-		drawTitle(posXTitle,posYTitle,40,"Gomoku Game");
+		drawTitle(posXTitle,posYTitle,30,"Gomoku Game");
 		double posXButton01 = 0.80*sizeX + shiftX;
 		double posYButton01 = 0.70*sizeY + shiftY;
 		drawButton(posXButton01,posYButton01,fontSize,"Continue");
@@ -290,7 +293,7 @@ public class GUI {
 		drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
 	}
 	public void drawMenuPause(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -323,79 +326,192 @@ public class GUI {
 
 	}
 	public void drawMenuPausePress(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
 		double posXTitle = 0.80*sizeX + shiftX;
 		double posYTitle = 0.85*sizeY + shiftY;
-		drawTitle(posXTitle,posYTitle,40,"Gomoku Game");
+		drawTitle(posXTitle,posYTitle,30,"Gomoku Game");
 
-		double posXButton01 = 0.80*sizeX + shiftX;
-		double posYButton01 = 0.70*sizeY + shiftY;
-
-		double posXButton02 = 0.80*sizeX + shiftX;
-		double posYButton02 = 0.55*sizeY + shiftY;
-
-		double posXButton03 = 0.80*sizeX + shiftX;
-		double posYButton03 = 0.40*sizeY + shiftY;
-
-		double posXButton04 = 0.722*sizeX + shiftX;
-		double posYButton04 = 0.25*sizeY + shiftY;
-
-		double posXButton05 = 0.8777*sizeX + shiftX;
-		double posYButton05 = 0.25*sizeY + shiftY;
 		switch (buttonNum){
 			case 1:
+				double posXButton01 = 0.80*sizeX + shiftX;
+				double posYButton01 = 0.70*sizeY + shiftY;
 				drawButtonPressed(posXButton01,posYButton01,fontSize,"Continue");
-				drawButton(posXButton02,posYButton02,fontSize,"Save Game");
-				drawButton(posXButton03,posYButton03,fontSize,"Back to Menu");
-				drawButtonSmall(posXButton04,posYButton04,fontSize,"Undo");
-				drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
 				break;
 			case 2:
-				drawButton(posXButton01,posYButton01,fontSize,"Continue");
+				double posXButton02 = 0.80*sizeX + shiftX;
+				double posYButton02 = 0.55*sizeY + shiftY;
 				drawButtonPressed(posXButton02,posYButton02,fontSize,"Save Game");
-				drawButton(posXButton03,posYButton03,fontSize,"Back to Menu");
-				drawButtonSmall(posXButton04,posYButton04,fontSize,"Undo");
-				drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
 				break;
 			case 3:
-				drawButton(posXButton01,posYButton01,fontSize,"Continue");
-				drawButton(posXButton02,posYButton02,fontSize,"Save Game");
+				double posXButton03 = 0.80*sizeX + shiftX;
+				double posYButton03 = 0.40*sizeY + shiftY;
 				drawButtonPressed(posXButton03,posYButton03,fontSize,"Back to Menu");
-				drawButtonSmall(posXButton04,posYButton04,fontSize,"Undo");
-				drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
 				break;
 			case 4:
-				drawButton(posXButton01,posYButton01,fontSize,"Continue");
-				drawButton(posXButton02,posYButton02,fontSize,"Save Game");
-				drawButton(posXButton03,posYButton03,fontSize,"Back to Menu");
+				double posXButton04 = 0.722*sizeX + shiftX;
+				double posYButton04 = 0.25*sizeY + shiftY;
 				drawButtonSmallPressed(posXButton04,posYButton04,fontSize,"Undo");
-				drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
 				break;
 			case 5:
-				drawButton(posXButton01,posYButton01,fontSize,"Continue");
-				drawButton(posXButton02,posYButton02,fontSize,"Save Game");
-				drawButton(posXButton03,posYButton03,fontSize,"Back to Menu");
-				drawButtonSmall(posXButton04,posYButton04,fontSize,"Undo");
+				double posXButton05 = 0.8777*sizeX + shiftX;
+				double posYButton05 = 0.25*sizeY + shiftY;
 				drawButtonSmallPressed(posXButton05,posYButton05,fontSize,"Quit");
 				break;
 		}
 	}
 
+	public void drawMenuWin(int winColor) throws InterruptedException {
+		int fontSize = 30;//按钮字体大小
+		double shiftX = 0;//按钮组整体横向微调
+		double shiftY = 0;//按钮组整体纵向微调
+
+		double posXTitle = 0.80*sizeX + shiftX;
+		double posYTitle = 0.85*sizeY + shiftY;
+		Thread.sleep(25);
+		StdDraw.setPenColor(235,245,255);
+		StdDraw.filledRectangle(posXTitle,posYTitle,200,50);
+		Thread.sleep(15);
+		StdDraw.setPenColor(Color.black);
+		if (winColor == 1){
+			drawTitle(posXTitle,posYTitle,30,"Black Wins!");
+		}else {
+			if (winColor == 2){
+				drawTitle(posXTitle,posYTitle,30,"Purple Wins!");
+			}
+		}
+
+		double posXButton01 = 0.80*sizeX + shiftX;
+		double posYButton01 = 0.70*sizeY + shiftY;
+		drawButton(posXButton01,posYButton01,fontSize,"New Game");
+		Thread.sleep(10);
+		double posXButton02 = 0.80*sizeX + shiftX;
+		double posYButton02 = 0.55*sizeY + shiftY;
+		drawButton(posXButton02,posYButton02,fontSize,"Save Game");
+		Thread.sleep(15);
+		double posXButton03 = 0.80*sizeX + shiftX;
+		double posYButton03 = 0.40*sizeY + shiftY;
+		drawButton(posXButton03,posYButton03,fontSize,"Back to Menu");
+		Thread.sleep(10);
+		double posXButton04 = 0.722*sizeX + shiftX;
+		double posYButton04 = 0.25*sizeY + shiftY;
+		drawButtonSmall(posXButton04,posYButton04,fontSize,"Undo");
+		Thread.sleep(10);
+		double posXButton05 = 0.8777*sizeX + shiftX;
+		double posYButton05 = 0.25*sizeY + shiftY;
+		drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
+	}
+	public void drawMenuWinTitle(int winColor) throws InterruptedException {
+		int fontSize = 30;//按钮字体大小
+		double shiftX = 0;//按钮组整体横向微调
+		double shiftY = 0;//按钮组整体纵向微调
+
+		double posXTitle = 0.80*sizeX + shiftX;
+		double posYTitle = 0.85*sizeY + shiftY;
+		Thread.sleep(10);
+		StdDraw.setPenColor(235,245,255);
+		StdDraw.filledRectangle(posXTitle,posYTitle,200,50);
+		Thread.sleep(25);
+		StdDraw.setPenColor(Color.black);
+		if (winColor == 1){
+			drawTitle(posXTitle,posYTitle,30,"Black Wins!");
+		}else {
+			if (winColor == 2){
+				drawTitle(posXTitle,posYTitle,30,"Purple Wins!");
+			}
+		}
+	}
+	public void drawMenuWinUnPress(int buttonNum) {
+		int fontSize = 30;//按钮字体大小
+		double shiftX = 0;//按钮组整体横向微调
+		double shiftY = 0;//按钮组整体纵向微调
+
+		switch (buttonNum){
+			case 1:
+				double posXButton01 = 0.80*sizeX + shiftX;
+				double posYButton01 = 0.70*sizeY + shiftY;
+				drawButton(posXButton01,posYButton01,fontSize,"New Game");
+				break;
+			case 2:
+				double posXButton02 = 0.80*sizeX + shiftX;
+				double posYButton02 = 0.55*sizeY + shiftY;
+				drawButton(posXButton02,posYButton02,fontSize,"Save Game");
+				break;
+			case 3:
+				double posXButton03 = 0.80*sizeX + shiftX;
+				double posYButton03 = 0.40*sizeY + shiftY;
+				drawButton(posXButton03,posYButton03,fontSize,"Back to Menu");
+				break;
+			case 4:
+				double posXButton04 = 0.722*sizeX + shiftX;
+				double posYButton04 = 0.25*sizeY + shiftY;
+				drawButtonSmall(posXButton04,posYButton04,fontSize,"Undo");
+				break;
+			case 5:
+				double posXButton05 = 0.8777*sizeX + shiftX;
+				double posYButton05 = 0.25*sizeY + shiftY;
+				drawButtonSmall(posXButton05,posYButton05,fontSize,"Quit");
+				break;
+		}
+
+
+
+
+
+	}
+	public void drawMenuWinPress(int buttonNum) {
+		int fontSize = 30;//按钮字体大小
+		double shiftX = 0;//按钮组整体横向微调
+		double shiftY = 0;//按钮组整体纵向微调
+
+		switch (buttonNum){
+			case 1:
+				double posXButton01 = 0.80*sizeX + shiftX;
+				double posYButton01 = 0.70*sizeY + shiftY;
+				drawButtonPressed(posXButton01,posYButton01,fontSize,"New Game");
+				break;
+			case 2:
+				double posXButton02 = 0.80*sizeX + shiftX;
+				double posYButton02 = 0.55*sizeY + shiftY;
+				drawButtonPressed(posXButton02,posYButton02,fontSize,"Save Game-Baned");
+				break;
+			case 3:
+				double posXButton03 = 0.80*sizeX + shiftX;
+				double posYButton03 = 0.40*sizeY + shiftY;
+				drawButtonPressed(posXButton03,posYButton03,fontSize,"Back to Menu");
+				break;
+			case 4:
+				double posXButton04 = 0.722*sizeX + shiftX;
+				double posYButton04 = 0.25*sizeY + shiftY;
+				drawButtonSmallPressed(posXButton04,posYButton04,fontSize,"Undo");
+				break;
+			case 5:
+				double posXButton05 = 0.8777*sizeX + shiftX;
+				double posYButton05 = 0.25*sizeY + shiftY;
+				drawButtonSmallPressed(posXButton05,posYButton05,fontSize,"Quit");
+				break;
+		}
+
+
+
+
+
+	}
+
 
 
 	public void drawOptions(){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
 		double posXTitle = 0.50*sizeX + shiftX;
 		double posYTitle = 0.90*sizeY + shiftY;
-		StdDraw.setPenColor(Color.white);
+		StdDraw.setPenColor(235, 245, 255);
 		StdDraw.filledRectangle(posXTitle,posYTitle,150,30);
-		drawTitle(posXTitle,posYTitle,40,"Game Setting");
+		drawTitle(posXTitle,posYTitle,30,"Game Setting");
 		double posXButton01 = 0.50*sizeX + shiftX;
 		double posYButton01 = 0.70*sizeY + shiftY;
 		drawButton(posXButton01,posYButton01,fontSize,"15-15 Board");
@@ -413,7 +529,7 @@ public class GUI {
 		drawButtonSmall(posXButton05,posYButton05,fontSize,"Back");
 	}
 	public void drawOptions(int buttonNum) {
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -446,7 +562,7 @@ public class GUI {
 		}
 	}
 	public void drawOptionsPress(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -479,7 +595,7 @@ public class GUI {
 		}
 	}
 	public void drawOptionsChosen(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -512,8 +628,10 @@ public class GUI {
 		}
 	}
 
-	public void drawNoSaves(){
-		int fontSize = 28;//按钮字体大小
+	public void drawNoSaves() {
+		StdDraw.setPenColor(235,245,255);
+		StdDraw.filledRectangle(225, 125,225,125);
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 		double posXTitle = 0.50*sizeX + shiftX;
@@ -525,7 +643,7 @@ public class GUI {
 
 	}
 	public void drawNoSavesPress(){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 		double posXButton = 0.5*sizeX + shiftX;
@@ -534,13 +652,14 @@ public class GUI {
 	}
 
 	public void drawExitSaveReminder(){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
-
+		StdDraw.setPenColor(235,245,255);
+		StdDraw.filledRectangle(225, 125,225,125);
 		double posXTitle = 0.50*sizeX + shiftX;
 		double posYTitle = 0.70*sizeY + shiftY;
-		drawTitle(posXTitle,posYTitle,40,"Save the Game?");
+		drawTitle(posXTitle,posYTitle,30,"Save the Game?");
 		double posXButton01 = 0.20*sizeX + shiftX;
 		double posYButton01 = 0.35*sizeY + shiftY;
 		drawButtonExtraSmall(posXButton01,posYButton01,fontSize,"Yes");
@@ -552,7 +671,7 @@ public class GUI {
 		drawButtonExtraSmall(posXButton03,posYButton03,fontSize,"Back");
 	}
 	public void drawExitSaveReminder(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -575,7 +694,7 @@ public class GUI {
 		}
 	}
 	public void drawExitSaveReminderPress(int buttonNum){
-		int fontSize = 28;//按钮字体大小
+		int fontSize = 30;//按钮字体大小
 		double shiftX = 0;//按钮组整体横向微调
 		double shiftY = 0;//按钮组整体纵向微调
 
@@ -599,8 +718,8 @@ public class GUI {
 	}
 
 	public void drawCanvas() {
-		Color mainColor = new Color(245,245,245);
-		Color boardBackgroundColor = new Color(240,200,0,150);
+		Color mainColor = new Color(235,245,255);
+		Color boardBackgroundColor = new Color(245,250,255);
 		StdDraw.setPenColor(mainColor);
 		StdDraw.filledRectangle(sizeX / 2.0, sizeY / 2.0,
 				sizeX / 2.0, sizeY / 2.0);
@@ -637,7 +756,7 @@ public class GUI {
 								(areaLength / ((double) boardSize * 2)) * 0.9);
 						break;
 					case 2:
-						StdDraw.setPenColor(255, 255, 255);
+						StdDraw.setPenColor(165, 165, 255);
 						StdDraw.filledCircle(coordinate + (x * areaLength / ((double) boardSize - 1)),
 								sizeY - coordinate - (y * areaLength / ((double) boardSize - 1)),
 								(areaLength / ((double) boardSize * 2)) * 0.9);
@@ -649,8 +768,8 @@ public class GUI {
 
 
 	public static void drawButton(double posX , double posY , int fontSize , String text){
-		Color ringColor = new Color(255, 192, 225);
-		Color innerColor = new Color(192, 255, 255);
+		Color ringColor = new Color(202, 212, 255);
+		Color innerColor = new Color(181, 191, 255);
 		StdDraw.setPenColor(ringColor);
 		StdDraw.filledRectangle(posX, posY, 185, 20);
 		StdDraw.filledRectangle(posX, posY, 170, 35);
@@ -671,8 +790,8 @@ public class GUI {
 		StdDraw.text(posX, posY, text);
 	}
 	public static void drawButtonSmall(double posX , double posY , int fontSize , String text){
-		Color ringColor = new Color(255, 192, 225);
-		Color innerColor = new Color(192, 255, 255);
+		Color ringColor = new Color(202, 212, 255);
+		Color innerColor = new Color(181, 191, 255);
 		StdDraw.setPenColor(ringColor);
 		StdDraw.filledRectangle(posX, posY, 85, 20);
 		StdDraw.filledRectangle(posX, posY, 70, 35);
@@ -694,8 +813,8 @@ public class GUI {
 	}
 	public static void drawButtonExtraSmall(double posX , double posY , int fontSize , String text){
 		double factor = 0.70;
-		Color ringColor = new Color(255, 192, 225);
-		Color innerColor = new Color(192, 255, 255);
+		Color ringColor = new Color(202, 212, 255);
+		Color innerColor = new Color(181, 191, 255);
 		StdDraw.setPenColor(ringColor);
 		StdDraw.filledRectangle(posX, posY, 85*factor, 20*factor);
 		StdDraw.filledRectangle(posX, posY, 70*factor, 35*factor);
@@ -717,8 +836,8 @@ public class GUI {
 	}
 
 	public static void drawButtonPressed(double posX , double posY , int fontSize , String text){
-		Color ringColor = new Color(255, 170, 255);
-		Color innerColor = new Color(110, 255, 255);
+		Color ringColor = new Color(202, 212, 255);
+		Color innerColor = new Color(163, 172, 255);
 		StdDraw.setPenColor(ringColor);
 		StdDraw.filledRectangle(posX, posY, 185, 20);
 		StdDraw.filledRectangle(posX, posY, 170, 35);
@@ -739,8 +858,8 @@ public class GUI {
 		StdDraw.text(posX, posY, text);
 	}
 	public static void drawButtonSmallPressed(double posX , double posY , int fontSize , String text){
-		Color ringColor = new Color(255, 170, 255);
-		Color innerColor = new Color(110, 255, 255);
+		Color ringColor = new Color(202, 212, 255);
+		Color innerColor = new Color(163, 172, 255);
 		StdDraw.setPenColor(ringColor);
 		StdDraw.filledRectangle(posX, posY, 85, 20);
 		StdDraw.filledRectangle(posX, posY, 70, 35);
@@ -762,8 +881,8 @@ public class GUI {
 	}
 	public static void drawButtonExtraSmallPressed(double posX , double posY , int fontSize , String text){
 		double factor = 0.70;
-		Color ringColor = new Color(255, 170, 255);
-		Color innerColor = new Color(110, 255, 255);
+		Color ringColor = new Color(202, 212, 255);
+		Color innerColor = new Color(163, 172, 255);
 		StdDraw.setPenColor(ringColor);
 		StdDraw.filledRectangle(posX, posY, 85*factor, 20*factor);
 		StdDraw.filledRectangle(posX, posY, 70*factor, 35*factor);
@@ -785,8 +904,8 @@ public class GUI {
 	}
 
 	public static void drawButtonChosen(double posX , double posY , int fontSize , String text){
-		Color ringColor = new Color(170,230,243);
-		Color innerColor = new Color(255, 135, 135);
+		Color ringColor = new Color(202, 212, 255);
+		Color innerColor = new Color(128, 136, 255);
 		StdDraw.setPenColor(ringColor);
 		StdDraw.filledRectangle(posX, posY, 185, 20);
 		StdDraw.filledRectangle(posX, posY, 170, 35);
@@ -807,8 +926,8 @@ public class GUI {
 		StdDraw.text(posX, posY, text);
 	}
 	public static void drawButtonSmallChosen(double posX , double posY , int fontSize , String text){
-		Color ringColor = new Color(170,230,243);
-		Color innerColor = new Color(255, 135, 135);
+		Color ringColor = new Color(202, 212, 255);
+		Color innerColor = new Color(128, 136, 255);
 		StdDraw.setPenColor(ringColor);
 		StdDraw.filledRectangle(posX, posY, 85, 20);
 		StdDraw.filledRectangle(posX, posY, 70, 35);
@@ -839,8 +958,8 @@ public class GUI {
 
 
 	public void drawFakeChess(int x, int y, int color){
-		Color fakeBlack = new Color(0,0,0,80);
-		Color fakeWhite = new Color(255,255,255,220);
+		Color fakeBlack = new Color(0,0,0,128);
+		Color fakeWhite = new Color(165,165,255,128);
 
 
 		double coordinate = (Math.min(sizeX, sizeY)) * 0.15;
@@ -858,8 +977,8 @@ public class GUI {
 	}
 
 	public void drawChessReverse(int x,int y){
-		Color mainColor = new Color(245,245,245);
-		Color boardBackgroundColor = new Color(240,200,0,150);
+		Color mainColor = new Color(235,245,255);
+		Color boardBackgroundColor = new Color(245,250,255);
 
 		double coordinate = (Math.min(sizeX, sizeY)) * 0.15;
 		double areaLength = (Math.min(sizeX, sizeY)) * 0.7;
@@ -1024,7 +1143,7 @@ public class GUI {
 				System.out.println("Filled black chess at (" + x + ", " + y + ")");
 		}
 		else {
-			StdDraw.setPenColor(192, 192, 255);
+			StdDraw.setPenColor(165, 165, 255);
 			StdDraw.filledCircle(coordinate + (x * areaLength / ((double) boardSize - 1)),
 					sizeY - coordinate - (y * areaLength / ((double) boardSize - 1)),
 					(areaLength / ((double) boardSize * 2)) * 0.9);
@@ -1042,18 +1161,18 @@ public class GUI {
 			StdDraw.filledCircle(120, coordinate, (areaLength / ((double) boardSize * 2)) * 1.1);
 			StdDraw.setPenColor(0, 0, 0);
 			StdDraw.filledCircle(120, coordinate, (areaLength / ((double) boardSize * 2)) * 0.9);
-			StdDraw.setPenColor(255, 240, 255);
+			StdDraw.setPenColor(235, 245, 255);
 			StdDraw.filledCircle(520, coordinate, (areaLength / ((double) boardSize * 2)) * 1.1);
-			StdDraw.setPenColor(192, 192, 255);
+			StdDraw.setPenColor(165, 165, 255);
 			StdDraw.filledCircle(520, coordinate, (areaLength / ((double) boardSize * 2)) * 0.9);
 			StdDraw.show();
 		}
 		else {
 			StdDraw.setPenColor(0, 255, 255);
 			StdDraw.filledCircle(520, coordinate, (areaLength / ((double) boardSize * 2)) * 1.1);
-			StdDraw.setPenColor(192, 192, 255);
+			StdDraw.setPenColor(165, 165, 255);
 			StdDraw.filledCircle(520, coordinate, (areaLength / ((double) boardSize * 2)) * 0.9);
-			StdDraw.setPenColor(255, 240, 255);
+			StdDraw.setPenColor(235, 245, 255);
 			StdDraw.filledCircle(120, coordinate, (areaLength / ((double) boardSize * 2)) * 1.1);
 			StdDraw.setPenColor(0, 0, 0);
 			StdDraw.filledCircle(120, coordinate, (areaLength / ((double) boardSize * 2)) * 0.9);

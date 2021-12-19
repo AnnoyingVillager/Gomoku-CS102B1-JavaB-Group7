@@ -32,6 +32,7 @@ public class ChessBoard {
     public void initializeBoard(){
         chessBoard = new int[boardSize][boardSize];
         moveTimes = 0;
+        steps.clear();
         for (int i=0 ; i<chessBoard.length ; i++){
             for (int j=0 ; j<chessBoard[i].length ; j++){
                 chessBoard[i][j] = 0;
@@ -52,6 +53,7 @@ public class ChessBoard {
     public void setTimeLeft(int timeLeft) {
         this.timeLeft = timeLeft;
     }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //棋盘状态获取(参数传出)
     public int[][] getChessBoard() {
@@ -77,6 +79,19 @@ public class ChessBoard {
     public boolean canUndo(){
         return steps.size() > 0;
     }
+
+    public int getTimeSpent() {
+        return timeSpent;
+    }
+
+    public int getTimeLeft() {
+        return timeLeft;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //棋盘操作
     public void playChess(int x,int y){
@@ -91,7 +106,7 @@ public class ChessBoard {
     //游戏存储
     public void save() throws FileNotFoundException {
         PrintWriter save = new PrintWriter("saves.txt");
-        save.print(boardSize + "@" + moveTimes + "@");
+        save.print(boardSize + "@" + moveTimes + "@" + timeSpent + "@" + timeLeft + "@");
         for (int i=0 ; i<chessBoard.length ; i++){
             for (int j=0 ; j<chessBoard[i].length ; j++){
                 String temp = chessBoard[i][j] + "#";
@@ -106,7 +121,10 @@ public class ChessBoard {
         String[] input01 = input.nextLine().split("@");
         boardSize = Integer.parseInt(input01[0]);
         moveTimes = Integer.parseInt(input01[1]);
-        String[] input02 = input01[2].split("#");
+        System.out.println("moveTimes: " + moveTimes);
+        timeSpent = Integer.parseInt(input01[2]);
+        timeLeft = Integer.parseInt(input01[3]);
+        String[] input02 = input01[4].split("#");
         int initialPos = 0;
         for (int i=0 ; i<boardSize ; i++){
             for (int j=0 ; j<boardSize ; j++){
@@ -122,9 +140,11 @@ public class ChessBoard {
         System.out.println(steps);
     }
     //悔棋
-    public void undo(){
+    public void undo() throws InterruptedException {
         moveTimes--;
-        if (moveTimes<2){ moveTimes = 0; }
+        System.out.println("moveTimes " + moveTimes);
+        Thread.sleep(477);
+        // if (moveTimes<2){ moveTimes = 0; }
         String temp = steps.pop();
         String[] moveInf = temp.split("@");
         System.out.println(Arrays.toString(moveInf));
@@ -133,6 +153,10 @@ public class ChessBoard {
         undoX = Integer.parseInt(moveCord[0]);
         undoY = Integer.parseInt(moveCord[1]);
         chessBoard[undoX][undoY] = 0;
+    }
+    //初始化落子记录
+    public void initializeSteps(){
+        steps.clear();
     }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //判断核心
