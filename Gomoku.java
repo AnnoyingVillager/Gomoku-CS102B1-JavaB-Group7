@@ -33,6 +33,7 @@ public final class Gomoku {
 	public static boolean isCleared = true;
 	public static boolean isDrawn = false;
 	public static boolean isTimerDrawn = false;
+	public static boolean isTitleDrawn = true;
 
 	public static void main(String[] args) throws AWTException, InterruptedException {
 		GUI startWindows = new GUI(540, 720);
@@ -320,6 +321,12 @@ public final class Gomoku {
 								lastX = tempX;
 								lastY = tempY;
 								GUI.isChessDrawn = false;
+								if(!isTitleDrawn) {
+									StdDraw.setPenColor(235,245,255);
+									StdDraw.filledRectangle(1024, 612, 200, 50);
+									GUI.drawTitle(1024, 612, 30, "Gomoku Game");
+									isTitleDrawn = true;
+								}
 							}
 						}
 						else {
@@ -1166,7 +1173,10 @@ public final class Gomoku {
 					System.out.println("is blocked");
 				}else {
 					if (board.isForbidden(x,y) && enableForbidden && color == 1){
-						System.out.println("is Forbidden");
+						StdDraw.setPenColor(235,245,255);
+						StdDraw.filledRectangle(1024, 612, 200, 50);
+						GUI.drawTitle(1024, 612, 30, "Forbidden Move!");
+						isTitleDrawn = false;
 						continue;
 					}else {
 						thread2[0].interrupt();
