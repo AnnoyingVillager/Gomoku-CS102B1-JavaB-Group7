@@ -1097,6 +1097,8 @@ public final class Gomoku {
 										windowsStatus = 0;
 										isTimerDrawn = false;
 										isGaming = false;
+										isWin = false;
+										TimerPlus.setEnd(false);
 									}
 								}else {
 									//按钮04
