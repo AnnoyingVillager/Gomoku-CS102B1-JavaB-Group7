@@ -3,10 +3,11 @@ import java.*;
 import java.util.Arrays;
 
 public class AI {
+    //board[列][行]；
     public int chess=2;
     public int chesstype;//第几种设定好的棋形；
     static ChessBoard chessBoard;
-    public static int size = Gomoku.getBroadSize();
+    public static int size=Gomoku.getBroadSize();
     public static int x;
     public static int y;
     public AI(){};
@@ -22,30 +23,31 @@ public class AI {
         return y;
     }
 
-    int[]  horizontal=new int[size],vertical=new int[size],tangle45=new int[size],tangle135=new int[size];
-    public  void setHorizontal(int board[][],int i,int j){
-        for (int k=0; k< size-j; k++,j++) {
-            horizontal[k]= board[i][j];
-            if(horizontal[k]!=0){
-            }
+    static int[]  horizontal=new int[size],vertical=new int[size],tangle45=new int[size],tangle135=new int[size];
+    public  void setHorizontal(int board[][],int i){
+        for (int k=0; k< size; k++) {
+            horizontal[k] = board[k][i];
         }
-
-
     }
-    public void setVertical(int[][]board,int i,int j){
-        for (int k = 0; k< size-i; k++,i++) {
-            vertical[k]= board[i][j];
+    public void setVertical(int[][]board,int j){
+        for (int k = 0; k< size; k++) {
+            vertical[k]= board[j][k];
         }
     }
     public void setTangle45(int[][] board,int i,int j){
-        for (int k = 0; k<Math.min(i+1,size-j); k++,i--,j++) {
-           tangle45[k]= board[i][j];
+        for (int k = 0; k<Math.min(i+1,size-j); k++) {
+           tangle45[k]= board[j+k][i-k];
+        }for(int k=Math.min(i+1,size-j);k<size;k++){
+            tangle45[k]=3;
         }
     }
     public void setTangle135(int[][] board,int i,int j){
         int gap=i-j;
-        for (int k = 0; k<Math.min(size-i,size-j); k++,i++,j++) {
-           tangle135[k]= board[i][j];
+        for (int k = 0; k<Math.min(size-i,size-j); k++) {
+           tangle135[k]= board[j+k][i+k];
+        }
+        for (int k = Math.min(size-i,size-j); k <size ; k++) {
+           tangle135[k]= 3;
         }
     }
     private int[] getHorizontal(int[][] board,int i){
@@ -61,9 +63,10 @@ public class AI {
         return tangle135;
     }
 
-
-       public static void compare(int[]temp1,int[]temp2,int[]temp3,int[][]board,int[][][][][]hs,int[][][][][]ss,int[][][][][]ha,int[][][][][]sa,int[]horizontal,int[]vertical,int[]tangle45,int[]tangle135){
+       public static void compare(int[]temp1,int[]temp2,int[]temp3,int[][]board,double[][][][][]hs,double[][][][][]ss,double[][][][][]ha,double[][][][][]sa){
            AI ai=new AI();
+           int[]horizontal=new int[ai.size],vertical=new int[ai.size],tangle45=new int[ai.size],tangle135=new int[ai.size];
+           //-----------------------------------------------------
            int[] huosi0=new int[]{0, 1, 1, 1, 1};
            int[] huosi1=new int[]{1, 0, 1, 1, 1};
            int[] huosi2=new int[]{1, 1, 0, 1, 1};
@@ -95,13 +98,19 @@ public class AI {
            int[] sisan1=new int[]{2, 1, 1, 1, 0};
            int[] sisan2=new int[]{0, 2, 2, 2, 1};
            int[] sisan3=new int[]{1, 2, 2, 2, 0};
+           //-------------------------------------------------------
            for (int i = 0; i < ai.size; i++) {
                for (int j = 0; j < ai.size; j++) {
-                  ai.setHorizontal( board, i,j);
-                  ai.setHorizontal(board,i,j);
+                   ai.setHorizontal( board, i);
+                   horizontal=AI.horizontal;
+                   ai.setVertical (board,j);
+                   vertical=AI.vertical;
                   ai.setTangle45(board,i,j);
+                   tangle45=AI.tangle45;
                   ai.setTangle135(board,i,j);
-                   for (int k = 0; k < ai.size; k++) {
+                  tangle135=AI.tangle135;
+               
+                   for (int k = 0; k < ai.size-4; k++) {
                        int trys=0;
                        do {
                            switch (trys) {
@@ -134,19 +143,20 @@ public class AI {
                                hs[4][i][j][k][trys] = 5;
                            }
                            if (Arrays.equals(temp1, huosi5)) {
-                               hs[5][i][j][k][trys] = 5;
+                               hs[5][i][j][k][trys] = 5.1;
                            }
                            if (Arrays.equals(temp1, huosi6)) {
-                               hs[6][i][j][k][trys] = 5;
+                               hs[6][i][j][k][trys] = 5.1;
                            }
                            if (Arrays.equals(temp1, huosi7)) {
-                               hs[7][i][j][k][trys] = 5;
+                               hs[7][i][j][k][trys] = 5.1;
                            }
                            if (Arrays.equals(temp1, huosi8)) {
-                               hs[8][i][j][k][trys] = 5;}
-                               if (Arrays.equals(temp1, huosi9)) {
-                                   hs[9][i][j][k][trys] = 5;
-                               }
+                               hs[8][i][j][k][trys] = 5.1;
+                           }
+                           if (Arrays.equals(temp1, huosi9)) {
+                                   hs[9][i][j][k][trys] = 5.1;
+                           }
 
 
                                if (Arrays.equals(temp1, huosan0)) {
@@ -159,13 +169,13 @@ public class AI {
                                    ha[2][i][j][k][trys] = 3;
                                }
                                if (Arrays.equals(temp1, huosan3)) {
-                                   ha[3][i][j][k][trys] = 3;
+                                   ha[3][i][j][k][trys] = 3.1;
                                }
                                if (Arrays.equals(temp1, huosan4)) {
-                                   ha[4][i][j][k][trys] = 3;
+                                   ha[4][i][j][k][trys] = 3.1;
                                }
                                if (Arrays.equals(temp1, huosan5)) {
-                                   ha[5][i][j][k][trys] = 3;
+                                   ha[5][i][j][k][trys] = 3.1;
                                }
 
 
@@ -176,17 +186,17 @@ public class AI {
                                    sa[1][i][j][k][trys] = 1;
                                }
                                if (Arrays.equals(temp1, sisan2)) {
-                                   sa[2][i][j][k][trys] = 1;
+                                   sa[2][i][j][k][trys] = 1.1;
                                }
                                if (Arrays.equals(temp1, sisan3)) {
-                                   sa[3][i][j][k][trys] = 1;
+                                   sa[3][i][j][k][trys] = 1.1;
                                }
                                trys += 1;
                            }
                            while (trys < 4) ;
                        }
 
-                   for (int l = 0; l < ai.size; l++) {
+                   for (int l = 0; l < ai.size-5; l++) {
                        int trys=0;
                        do{
                            switch (trys){
@@ -199,12 +209,12 @@ public class AI {
                                ss[3][i][j][l][trys] = 4;
                            }
                            if(Arrays.equals(temp2,sisi7)){
-                               ss[7][i][j][l][trys] = 4;
+                               ss[7][i][j][l][trys] = 4.1;
                            }
                            trys+=1;
                    }while(trys<4);
                }
-                   for (int m = 0; m < ai.size; m++) {
+                   for (int m = 0; m < ai.size-6; m++) {
                        int trys=0;
                        do{
                            switch (trys){
@@ -223,14 +233,14 @@ public class AI {
                                ss[2][i][j][m][trys] = 4;
                            }
                            if(Arrays.equals(temp3,sisi4)){
-                               ss[4][i][j][m][trys] = 4;
+                               ss[4][i][j][m][trys] = 4.1;
                            }
 
                            if(Arrays.equals(temp3,sisi5)){
-                               ss[5][i][j][m][trys] = 4;
+                               ss[5][i][j][m][trys] = 4.1;
                            }
                            if(Arrays.equals(temp3,sisi6)){
-                               ss[6][i][j][m][trys] = 4;
+                               ss[6][i][j][m][trys] = 4.1;
                            }
                            trys+=1;
                        }while(trys<4);
@@ -239,8 +249,8 @@ public class AI {
            }
 
        }
-       public static void action(int chess,int size,int[][]board,int[][][][][]hs,int[][][][][]ss,int[][][][][]ha,int[][][][][]sa) {
-           int max = 0;
+       public static void action(int chess,int size,int[][]board,double[][][][][]hs,double[][][][][]ss,double[][][][][]ha,double[][][][][]sa) {
+           double max = 0;
            for (int n = 0; n < 10; n++) {
                for (int i = 0; i <size; i++) {
                    for (int j = 0; j < size; j++) {
@@ -298,279 +308,278 @@ public class AI {
                            for (int k = 0; k < size; k++) {
                                for (int l = 0; l < 5; l++) {
                                    if (max == hs[l][i][j][k][0]) {
-                                       if (!chessBoard.isForbidden(i, k + l + j)) {
-                                           x = i;
-                                           y = k + l + j;
+
+                                           y = i;
+                                           x = k + l ;
                                            isPlaced = true;
                                            break;
-                                       }
                                    }
                                    if (max == hs[l][i][j][k][1]) {
-                                       if (!chessBoard.isForbidden(k + l + i, j)) {
-                                           x = k + l + i;
-                                           y = j;
+
+                                           y = k + l ;
+                                           x = j;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == hs[l][i][j][k][2]) {
-                                       if (!chessBoard.isForbidden(k + l + i, k + l + j)) {
-                                           x = k + l + i;
-                                           y = k + l + j;
+
+                                           y = -k - l + i;
+                                           x = k + l + j;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == hs[l][i][j][k][3]) {
-                                       if (!chessBoard.isForbidden(-k - l + i, k + l + j)) {
-                                           x = -k - l + i;
-                                           y = k + l + j;
+
+                                           y = k + l + i;
+                                           x = k + l + j;
                                            isPlaced = true;
                                            break;
-                                       }
+
 
                                    }
                                }
 
                                for (int l = 5; l < 10; l++) {
                                    if (max == hs[l][i][j][k][0]) {
-                                       if (!chessBoard.isForbidden(i, j + k + l - 5)) {
-                                           x = i;
-                                           y = j + k + l - 5;
+
+                                           y = i;
+                                           x = k + l - 5;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == hs[l][i][j][k][1]) {
-                                       if (!chessBoard.isForbidden(i + k + l - 5, j)) {
-                                           x = i + k + l - 5;
-                                           y = j;
+
+                                           y = k + l - 5;
+                                           x = j;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == hs[l][i][j][k][2]) {
-                                       if (!chessBoard.isForbidden(i + k + l - 5, j + k + l - 5)) {
-                                           x = i + k + l - 5;
-                                           y = j + k + l - 5;
+
+                                           y = i - k - l + 5;
+                                           x = j + k + l - 5;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == hs[l][i][j][k][3]) {
-                                       if (!chessBoard.isForbidden(i - k - l + 5, j + k + l - 5)) {
-                                           x = i + k + l - 5;
-                                           y = j;
+
+                                           y = i + k + l - 5;
+                                           x = j + k + l - 5;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                }
                                for (int l = 0; l < 4; l++) {
                                    if (max == ss[l][i][j][k][0]) {
-                                       if (!chessBoard.isForbidden(i, j + k + l + 2)) {
-                                           x = i;
-                                           y = j + k + l + 2;
-                                           isPlaced = true;
-                                           break;
-                                       }
+                                      if(y<size-1||x<size-1) {
+                                          y = i;
+                                          x = k + l + 2;
+                                          isPlaced = true;
+                                          break;
+                                      }
                                    }
                                    if (max == ss[l][i][j][k][1]) {
-                                       if (!chessBoard.isForbidden(i + k + l + 2, j)) {
-                                           x = i + k + l + 2;
-                                           y = j;
+                                       if(y<size-1||x<size-1) {
+                                           y = k + l + 2;
+                                           x = j;
                                            isPlaced = true;
                                            break;
                                        }
                                    }
                                    if (max == ss[l][i][j][k][2]) {
-                                       if (!chessBoard.isForbidden(i + k + l + 2, j + k + l + 2)) {
-                                           x = i + k + l + 2;
-                                           y = j + k + l + 2;
+
+                                           y = i - k - l - 2;
+                                           x = j + k + l + 2;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ss[l][i][j][k][3]) {
-                                       if (!chessBoard.isForbidden(i - k - l - 2, j + k + l + 2)) {
-                                           x = i - k - l - 2;
-                                           y = j + k + l + 2;
+
+                                           y = i + k + l + 2;
+                                           x = j + k + l + 2;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                }
 
                                for (int l = 4; l < 8; l++) {
                                    if (max == ss[l][i][j][k][0]) {
-                                       if (!chessBoard.isForbidden(i, j + k + l - 2)) {
-                                           x = i;
-                                           y = j + k + l - 2;
+
+                                           y = i;
+                                           x = k + l - 2;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ss[l][i][j][k][1]) {
-                                       if (!chessBoard.isForbidden(i + k + l - 2, j)) {
-                                           x = i + k + l - 2;
-                                           y = j;
+
+                                           y = k + l - 2;
+                                           x = j;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ss[l][i][j][k][2]) {
-                                       if (!chessBoard.isForbidden(i + k + l - 2, j + k + l - 2)) {
-                                           x = i + k + l - 2;
-                                           y = j + k + l - 2;
+
+                                           y = i - k - l + 2;
+                                           x = j + k + l - 2;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ss[l][i][j][k][3]) {
-                                       if (!chessBoard.isForbidden(i - k - l + 2, j + k + l - 2)) {
-                                           x = i - k - l + 2;
-                                           y = j + k + l - 2;
+
+                                           y = i + k + l - 2;
+                                           x = j + k + l - 2;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                }
                                for (int l = 0; l < 3; l++) {
                                    if (max == ha[l][i][j][k][0]) {
-                                       if (!chessBoard.isForbidden(i, j + k + l)) {
-                                           x = i;
-                                           y = j + k + l;
+
+                                           y = i;
+                                           x = k + l;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ha[l][i][j][k][1]) {
-                                       if (!chessBoard.isForbidden(i + k + l, j)) {
-                                           x = i + k + l;
-                                           y = j;
+
+                                           y = k + l;
+                                           x = j;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ha[l][i][j][k][2]) {
-                                       if (!chessBoard.isForbidden(i + k + l, j + k + l)) {
-                                           x = i + k + l;
-                                           y = j + k + l;
+
+                                           y = i - k - l;
+                                           x = j + k + l;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ha[l][i][j][k][3]) {
-                                       if (!chessBoard.isForbidden(i - k - l, j + k + l)) {
-                                           x = i - k - l;
-                                           y = j + k + l;
+
+                                           y = i + k + l;
+                                           x = j + k + l;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                }
 
                                for (int l = 3; l < 6; l++) {
                                    if (max == ha[l][i][j][k][0]) {
-                                       if (!chessBoard.isForbidden(i, j + k + l - 3)) {
-                                           x = i;
-                                           y = j + k + l - 3;
+
+                                           y = i;
+                                           x = k + l - 3;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ha[l][i][j][k][1]) {
-                                       if (!chessBoard.isForbidden(i + k + l - 3, j)) {
-                                           x = i + k + l - 3;
-                                           y = j;
+
+                                           y = k + l - 3;
+                                           x = j;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ha[l][i][j][k][2]) {
-                                       if (!chessBoard.isForbidden(i + k + l - 3, j + k + l - 3)) {
-                                           x = i + k + l - 3;
-                                           y = j + k + l - 3;
+
+                                           y = i - k - l + 3;
+                                           x = j + k + l - 3;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == ha[l][i][j][k][3]) {
-                                       if (!chessBoard.isForbidden(i - k - l + 3, j + k + l - 3)) {
-                                           x = i - k - l + 3;
-                                           y = j + k + l - 3;
+
+                                           y = i + k + l - 3;
+                                           x = j + k + l - 3;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                }
 
                                for (int l = 0; l < 2; l++) {
                                    if (max == sa[l][i][j][k][0]) {
-                                       if (!chessBoard.isForbidden(i, j + k + 4 * l)) {
-                                           x = i;
-                                           y = j + k + 4 * l;
+
+                                           y = i;
+                                           x = k + 4 * l;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == sa[l][i][j][k][1]) {
-                                       if (!chessBoard.isForbidden(i + k + 4 * l, j)) {
-                                           x = i + k + 4 * l;
-                                           y = j;
+
+                                           y = k + 4 * l;
+                                           x = j;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == sa[l][i][j][k][2]) {
-                                       if (!chessBoard.isForbidden(i + k + 4 * l, j + k + 4 * l)) {
-                                           x = i + k + 4 * l;
-                                           y = j + k + 4 * l;
+
+                                           y = i - k - 4 * l;
+                                           x = j + k + 4 * l;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == sa[l][i][j][k][3]) {
-                                       if (!chessBoard.isForbidden(i - k - 4 * l, j + k + 4 * l)) {
-                                           x = i - k - 4 * l;
-                                           y = j + k + 4 * l;
+
+                                           y = i + k + 4 * l;
+                                           x = j + k + 4 * l;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                }
                                for (int l = 2; l < 4; l++) {
                                    if (max == sa[l][i][j][k][0]) {
-                                       if (!chessBoard.isForbidden(i, j + k + 4 * l - 8)) {
-                                           x = i;
-                                           y = j + k + 4 * l - 8;
+
+                                           y = i;
+                                           x = k + 4 * l - 8;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == sa[l][i][j][k][1]) {
-                                       if (!chessBoard.isForbidden(i + k + 4 * l - 8, j)) {
-                                           x = i + k + 4 * l - 8;
-                                           y = j;
+
+                                           y = k + 4 * l - 8;
+                                           x = j;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == sa[l][i][j][k][2]) {
-                                       if (!chessBoard.isForbidden(i + k + 4 * l - 8, j + k + 4 * l - 8)) {
-                                           x = i + k + 4 * l - 8;
-                                           y = j + k + 4 * l - 8;
+
+                                           y = i - k - 4 * l + 8;
+                                           x = j + k + 4 * l - 8;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                    if (max == sa[l][i][j][k][3]) {
-                                       if (!chessBoard.isForbidden(i - k - 4 * l + 8, j + k + 4 * l - 8)) {
-                                           x = i - k - 4 * l + 8;
-                                           y = j + k + 4 * l - 8;
+
+                                           y = i + k + 4 * l - 8;
+                                           x = j + k + 4 * l - 8;
                                            isPlaced = true;
                                            break;
-                                       }
+
                                    }
                                }
                            }
@@ -592,16 +601,16 @@ public class AI {
 
                        if (chess == 1) {
                            if(!chessBoard.isForbidden(i,j)) {
-                           x = i;
                            y = j;
+                           x = i;
                            isPlaced = true;
                            find=true;
                          }
 
                        } else {
                            if(!chessBoard.isForbidden(i,j)) {
-                               x = i;
                                y = j;
+                               x = i;
                                isPlaced = true;
                                find=true;
                            }
@@ -618,13 +627,13 @@ public class AI {
         int[]temp1=new int[5];
         int[]temp2=new int[6];
         int[]temp3=new int[7];
-        int[][][][][]hs=new int[10][size][size][size][4];
-        int[][][][][]ss=new int[8][size][size][size][4];
-        int[][][][][]ha=new int[6][size][size][size][4];
-        int[][][][][]sa=new int[4][size][size][size][4];
+        double[][][][][]hs=new double[10][size][size][size][4];
+        double[][][][][]ss=new double[8][size][size][size][4];
+        double[][][][][]ha=new double[6][size][size][size][4];
+        double[][][][][]sa=new double[4][size][size][size][4];
         int[]  horizontal=new int[size],vertical=new int[size],tangle45=new int[size],tangle135=new int[size];
-        int chess=1;
-        compare(temp1,temp2,temp3,board,hs,ss,ha,sa,horizontal,vertical,tangle45,tangle135);
+        int chess=2;
+        compare(temp1,temp2,temp3,board,hs,ss,ha,sa);
         action( chess,size,board,hs,ss,ha,sa);
 
     }

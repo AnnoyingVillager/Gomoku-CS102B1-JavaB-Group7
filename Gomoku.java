@@ -1243,18 +1243,18 @@ public final class Gomoku {
 			else if(isMachine && (board.getMoveTimes() % 2 == 1) && !isWin) {
 				System.out.println("AI working");
 				AI ai = new AI(board);
-				AI.size = board.chessBoard.length;
-				int size = board.chessBoard.length;
+				AI.size = board.getBoardSize();
+				int size = board.getBoardSize();
 				int[]temp1=new int[5];
 				int[]temp2=new int[6];
 				int[]temp3=new int[7];
-				int[][][][][]hs=new int[10][size][size][size][4];
-				int[][][][][]ss=new int[8][size][size][size][4];
-				int[][][][][]ha=new int[6][size][size][size][4];
-				int[][][][][]sa=new int[4][size][size][size][4];
-				int[]  horizontal=new int[size],vertical=new int[size],tangle45=new int[size],tangle135=new int[size];
+				double[][][][][]hs=new double[10][size][size][size][4];
+				double[][][][][]ss=new double[8][size][size][size][4];
+				double[][][][][]ha=new double[6][size][size][size][4];
+				double[][][][][]sa=new double[4][size][size][size][4];
 				int chess=1;
-				AI.compare(temp1,temp2,temp3, board.chessBoard ,hs,ss,ha,sa,horizontal,vertical,tangle45,tangle135);
+				System.out.println(board.chessBoard.length);
+				AI.compare(temp1,temp2,temp3, board.chessBoard ,hs,ss,ha,sa);
 				AI.action( chess,size,board.chessBoard ,hs,ss,ha,sa);
 				x = ai.getX();
 				y = ai.getY();
